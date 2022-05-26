@@ -6,17 +6,17 @@
     "description": "helps you to follow dance moves by mirroring the currently-playing video",
 
     "permissions": [
-        "activeTab"
+        "activeTab", "storage"
     ],
 
     "browser_action": {
         "default_title": "Dance Monkey",
-        "default_popup": "popup/popup.html"
+        "default_popup": "popup/options.html"
     },
 
     "content_scripts": [{
-        "matches": ["https://*.youtube.com/*", "https://*.duckduckgo.com/*", "https://*.youtube-nocookie.com/*"],
-        "js": ["popup/popup.js", "main.js"],
+        "matches": ["*://*.youtube.com/*", "*://*.duckduckgo.com/*", 
+            "*://*.youtube-nocookie.com/*", "*://*.youtube-nocookie.com/*"],
         "all_frames": true
     }]
 }

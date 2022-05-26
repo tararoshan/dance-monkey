@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="options.css"/>
+    </head>
+    
+    <body>
+        <h1>dance monkey 🐵</h1>
+        
+        <!-- TODO pink highlight -->
+        <div>
+            <!-- mirroring -->
+            <section>
+                <!-- TODO change this to a checkbox -->
+                <!-- TODO increase spacing -->
+                <h4><span class="option">mirror video:</span> <input type="checkbox" id="mirror" value="off"></input></h4>
+                <!-- <input type="button" id="mirror-button" value="off"></input> -->
+            </section>
+
+            <!-- speed -->
+            <section>
+                <h4><span class="option">playback speed</span></h4>
+                <!-- TODO align these horizontally -->
+                <input type="range" id="speed-range" min="0.05" max="2" value="1" step="0.05" list="tickmarks">
+                    <!-- note: tickmarks are not supported by Firefox -->
+                    <datalist id="tickmarks"><option value="1"></option></datalist>
+                    <!-- TODO sync the values with two listeners -->
+                    x<input type="number" id="speed-num" min="0.05" max="2" value="1" step="0.05"></input>
+                </input>
+            </section>
+            
+            <!-- loop -->
+            <section>
+                <h4><span class="option">loop:</span> <input type="checkbox" id="loop" value="loop"></input></h4>
+                <!-- set max to video minute max -->
+                from <input type="number" min="0" max="0" id="minutes-start" placeholder="min"></input> : 
+                <input type="number" min="0" max="0" id="seconds-start" placeholder="sec"></input> to
+                <input type="number" min="0" max="0" id="minutes-end" placeholder="min"></input> : 
+                <input type="number" min="0" max="0" id="seconds-end" placeholder="sec"></input>
+            </section>
+
+            <!-- delay -->
+            <section>
+                <h4><span class="option">delay</span></h4>
+                <p><input type="number" min="0" max="60" value="0" id="delay"></input> sec</p>
+            </section>
+        </div>
+        <script src="options.js"></script>
+    </body>
+    
+</html>
