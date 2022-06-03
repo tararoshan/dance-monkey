@@ -1,3 +1,4 @@
+/* universal styles */
 * {
     font-family: "Avenir Next", Helvetica, Arial, sans-serif;
 }
@@ -11,6 +12,17 @@ label {
     margin-right: 2rem;
 }
 
+/* class-specific styles */
 .option {
     background-color: lightpink;
+}
+
+/* id-specific styles */
+#reset {
+    font-size: medium;
+    margin-left: 1.5rem;
+}
+
+#speed-num {
+    margin-left: 0.25rem;
 }

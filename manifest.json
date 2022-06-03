@@ -6,7 +6,9 @@
     "description": "helps you to follow dance moves by mirroring the currently-playing video",
 
     "permissions": [
-        "activeTab", "storage"
+        "activeTab",
+        "storage",
+        "tabs"
     ],
 
     "browser_action": {
@@ -17,6 +19,7 @@
     "content_scripts": [{
         "matches": ["*://*.youtube.com/*", "*://*.duckduckgo.com/*", 
             "*://*.youtube-nocookie.com/*", "*://*.youtube-nocookie.com/*"],
-        "all_frames": true
+        "all_frames": true,
+        "js": ["popup/options.js"]
     }]
 }
