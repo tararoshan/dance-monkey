@@ -3,6 +3,10 @@
     font-family: "Avenir Next", Helvetica, Arial, sans-serif;
 }
 
+body {
+    width: 400px;
+}
+
 input[type='number']{
     width: 60px;
 }

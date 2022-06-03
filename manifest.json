@@ -1,5 +1,5 @@
 {
-    "manifest_version": 2,
+    "manifest_version": 3,
     "name": "Dance Monkey",
     "version": "0.1",
 
@@ -8,13 +8,14 @@
     "permissions": [
         "activeTab",
         "storage",
-        "tabs"
+        "tabs",
+        "scripting"
     ],
 
-    "browser_action": {
+    "action": {
         "default_title": "Dance Monkey",
         "default_popup": "popup/options.html"
-    },
+      },
 
     "content_scripts": [{
         "matches": ["*://*.youtube.com/*", "*://*.duckduckgo.com/*", 

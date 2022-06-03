@@ -1,3 +1,15 @@
+try {
+    browser
+} catch (e) {
+    browser = chrome
+}
+
+const MAX_SPEED = 2;
+const MIN_SPEED = 0.1;
+
+const browserStorage = browser.storage.local
+const executeScript = (browser.tabs.executeScript ?? browser.scripting.executeScript)
+
 /* initialise variables */
 var mirrorBox = document.getElementById('mirror');
 var speedSlider = document.getElementById('speed-range');
@@ -6,8 +18,8 @@ var loopBox = document.getElementById('loop');
 
 /*  add event listeners to inputs */
 mirrorBox.addEventListener('change', mirrorFunc);
-speedSlider.addEventListener('change', syncFromSlider);
-speedNum.addEventListener('change', syncFromNum);
+speedSlider.addEventListener('change', onSpeedChange);
+speedNum.addEventListener('change', onSpeedChange);
 loopBox.addEventListener('change', loop);
 
 /* generic error handler */
@@ -18,53 +30,77 @@ function onError(error) {
 /* display previously-set options on startup */
 initialize();
 
-function initialize() {
+async function initialize() {
+    const state = await browserStorage.get()
     // mirror
-    mirrorBox.value = localStorage.getItem('mirrorBox');
+    mirrorBox.value = state.mirrorBox
     mirrorBox.checked = mirrorBox.value === 'on' ? true : false;
     // speed
-    speedSlider.value = localStorage.getItem('speed');
-    speedNum.value = localStorage.getItem('speed');
+    speedSlider.value = state.speed
+    speedNum.value = state.speed
 }
 
 /* mirror button function */
-function mirrorFunc() {
+async function mirrorFunc() {
     if (mirrorBox.value === 'on') {
         // if the video is mirrored, unmirror it
         mirrorBox.value = 'off';
-        localStorage.setItem('mirrorBox', 'off');
+        browserStorage.set({ mirrorBox: 'off' });
         alert('mirror now off');
         // run script
     } else if (mirrorBox.value === 'off') {
         // otherwise, mirror the video
         mirrorBox.value = 'on';
-        localStorage.setItem('mirrorBox', 'on');
+        browserStorage.set({ mirrorBox: 'on' });
         alert('mirror now on');
-        browser.tabs.executeScript({file: `/mirror.js`, allFrames: true});
+        executeScript({
+            target: { tabId: await getActiveTabId(), allFrames: true },
+            file: `/mirror.js`, allFrames: true
+        });
     }
 }
 
 /* syncing the speed slider and number */
-function syncFromSlider() {
-    let newSpeed = speedSlider.value;
+function onSpeedChange(event) {
+    let newSpeed = event.target.value;
+
+    if (newSpeed > MAX_SPEED) {
+        newSpeed = MAX_SPEED;
+    } else if (newSpeed < MIN_SPEED) {
+        newSpeed = MIN_SPEED;
+    }
+
+    speedSlider.value = newSpeed;
     speedNum.value = newSpeed;
     changeSpeed(newSpeed);
 }
 
-function syncFromNum() {
-    let newSpeed = speedNum.value;
-    speedSlider.value = newSpeed;
-    changeSpeed(newSpeed);
+// executes script assuming no iframes
+async function changeSpeed(newSpeed) {
+    browserStorage.set({ speed: newSpeed });
+    console.log('new speed', newSpeed)
+
+    let speedCode = (newSpeed) => {
+        var vid = document.querySelector('video');
+        if (vid) {
+            vid.playbackRate = newSpeed;
+            console.log('Changed video speed!', newSpeed)
+        }
+    }
+    executeScript({
+        target: { tabId: await getActiveTabId(), allFrames: true },
+        func: speedCode,
+        args: [newSpeed],
+    })
 }
 
-// executes script assuming no iframes
-function changeSpeed(newSpeed) {
-    localStorage.setItem('speed', newSpeed);
-    
-    let speedCode = `var vid = document.querySelector('video');\n vid.playbackRate = ${newSpeed};`
-    browser.tabs.executeScript({
-        code: speedCode
-    })
+async function getActiveTabId() {
+    const tabs = await browser.tabs.query({ active: true })
+    const tab = tabs[0]
+    if (tab) {
+        return tab.id
+    }
+    return undefined
 }
 
 /* loop */
