@@ -1,14 +1,31 @@
-try {
-    browser
-} catch (e) {
-    browser = chrome
+/* options.js
+ *
+ * KNOWN ERRORS
+ * - if the playback rate is changed in the YouTube UI, the extemsopm won't
+ * pick up on the change (since the browser is a separate window!)
+ *
+ * DONE
+ * - can change video speed in YouTube with extension (Chrome)
+ *      * TODO check in Firefox
+ *      * TODO add keyboard shortcuts for speed
+ * - can mirror videos in YouTube with extension
+ *      * TODO mirror in iframes (such as DuckDuckGo)
+ * 
+ * CURRENT GOAL
+ *      * 
+ */
+
+if (!('browser' in window)) {
+    window.browser = chrome
 }
 
 const MAX_SPEED = 2;
 const MIN_SPEED = 0.1;
 
 const browserStorage = browser.storage.local
+console.log('tabs', Boolean(browser.tabs), 'scripting', Boolean(browser.scripting))
 const executeScript = (browser.tabs.executeScript ?? browser.scripting.executeScript)
+
 
 /* initialise variables */
 var mirrorBox = document.getElementById('mirror');
@@ -17,7 +34,7 @@ var speedNum = document.getElementById('speed-num');
 var loopBox = document.getElementById('loop');
 
 /*  add event listeners to inputs */
-mirrorBox.addEventListener('change', mirrorFunc);
+mirrorBox.addEventListener('change', onMirrorChange);
 speedSlider.addEventListener('change', onSpeedChange);
 speedNum.addEventListener('change', onSpeedChange);
 loopBox.addEventListener('change', loop);
@@ -27,36 +44,64 @@ function onError(error) {
     console.log(error);
 }
 
-/* display previously-set options on startup */
+/* display previously-set options on open (startup) */
 initialize();
 
 async function initialize() {
     const state = await browserStorage.get()
     // mirror
-    mirrorBox.value = state.mirrorBox
+    mirrorBox.value = state.mirrorBox;
+    // alert(`${mirrorBox.value}`);  // debugging
     mirrorBox.checked = mirrorBox.value === 'on' ? true : false;
     // speed
-    speedSlider.value = state.speed
-    speedNum.value = state.speed
+    speedSlider.value = state.speed;
+    speedNum.value = state.speed;
+    // alert(`${speedSlider.value}`);  // debugging
 }
 
 /* mirror button function */
-async function mirrorFunc() {
-    if (mirrorBox.value === 'on') {
-        // if the video is mirrored, unmirror it
-        mirrorBox.value = 'off';
-        browserStorage.set({ mirrorBox: 'off' });
-        alert('mirror now off');
-        // run script
-    } else if (mirrorBox.value === 'off') {
-        // otherwise, mirror the video
+async function onMirrorChange() {
+    // alert('mirror test');  // debugging
+    // need to mirror the video if the option was checked
+    if (mirrorBox.checked) {
         mirrorBox.value = 'on';
         browserStorage.set({ mirrorBox: 'on' });
-        alert('mirror now on');
+        // alert('mirror test on');  // debugging
+
+        let doMirrorVideo = () => {
+            var vid = document.querySelector('video');
+            if (vid) {
+                // TODO wait until the video has finished loading
+                // or consistently keep mirroring it on changes
+                vid.style.transform = 'scaleX(-1)';
+                // console.log('mirrored video!');  // debugging
+            }
+        }
+        // execute the script in the browser with executeScript
         executeScript({
-            target: { tabId: await getActiveTabId(), allFrames: true },
-            file: `/mirror.js`, allFrames: true
-        });
+            target: { tabId: await getActiveTabId(),
+                allFrames: true },
+                func: doMirrorVideo,
+            })
+            
+    // otherwise, unmirror the video
+    } else {    // mirrorBox.value === 'off'
+        mirrorBox.value = 'off';
+        browserStorage.set({ mirrorBox: 'off' });
+        // alert('mirror now off');  // debugging
+        
+        let undoMirrorVideo = () => {
+            var vid = document.querySelector('video');
+            if (vid) {
+                vid.style.transform = 'scaleX(1)';
+                // console.log('unmirrored video!');  // debugging
+            }
+        }
+        executeScript({
+            target: { tabId: await getActiveTabId(),
+            allFrames: true },
+            func: undoMirrorVideo,
+        })
     }
 }
 
@@ -75,64 +120,32 @@ function onSpeedChange(event) {
     changeSpeed(newSpeed);
 }
 
-// executes script assuming no iframes
+/* executes script assuming no iframes */
 async function changeSpeed(newSpeed) {
     browserStorage.set({ speed: newSpeed });
-    console.log('new speed', newSpeed)
 
     let speedCode = (newSpeed) => {
         var vid = document.querySelector('video');
         if (vid) {
             vid.playbackRate = newSpeed;
-            console.log('Changed video speed!', newSpeed)
+            // console.log('Changed video speed!', newSpeed);  // debugging
         }
     }
+    // execute the script in the browser with executeScript
     executeScript({
-        target: { tabId: await getActiveTabId(), allFrames: true },
+        target: { tabId: await getActiveTabId(),
+        allFrames: true },
         func: speedCode,
         args: [newSpeed],
     })
 }
 
+/* to execute the scripts on the active tab only */
 async function getActiveTabId() {
-    const tabs = await browser.tabs.query({ active: true })
-    const tab = tabs[0]
+    const tabs = await browser.tabs.query({ active: true });
+    const tab = tabs[0];
     if (tab) {
-        return tab.id
+        return tab.id;
     }
-    return undefined
+    return undefined;
 }
-
-/* loop */
-// function loop() {
-//     if (loopBox.value === 'on') {
-//         // if the video is looped, unloop it
-//         loopBox.value = 'off';
-//         localStorage.setItem('loopBox', 'off');
-//         alert('loop now off');
-//     } else if (loopBox.value === 'off') {
-//         // otherwise, loop the video
-//         loopBox.value = 'on';
-//         localStorage.setItem('loopBox', 'on');
-//         alert('loop now on');
-//     }
-// }
-// // if time goes over the ending min/sec, set it to starting time/sec
-// // if below starting time/sec, set it to starting time/sec
-// // set max time/sec values for input to corresponding max for video
-// let durationCode = `var vid = document.querySelector('video');\n vid.duration;`
-
-// browser.tabs.executeScript({
-//     code: durationCode
-// }, setMaxTime)
-
-// function setMaxTime(resultsArray) {
-//     alert(resultsArray[0]);
-// }
-
-// // delay
-// function delay(timeout) {
-//     // remove the hourglass button
-//     // delayButton.style = 
-//     let timeoutCode = `var vid = document.querySelector('video); vid.pause(); setTimeout(() => {vid.play()}, ${timeout} * 1000);`
-// }
