@@ -1,17 +1,9 @@
-# dance-monkey
-a chrome/firefox extension to help with learning dances from YouTube videos
+# Dance Monkey
+a chrome/firefox extension to help with learning dances from YouTube videos. The
+name comes from "code monkey" but for dancing (just follow what the dancer on
+the screen does, code what your boss tells you to code).
 
-## Features
-### Mirror Video
-TODO add description
-
-### Change Speed
-TODO add description
-
-### Loop Video Sections
-coming soon!
-TODO add description
-
-### 5-Second Countdown
-coming soon!
-TODO add description
+# Manual Testing in Firefox
+Clone the repository, open Firefox > Add-ons Manager > Extensions >
+gear/settings button > Debug Add-ons > Load Temporary Add-on... > select the
+manifest.json file of Dance Monkey.
