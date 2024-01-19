@@ -1,7 +1,7 @@
 /* options.js
  *
  * KNOWN ERRORS
- * - if the playback rate is changed in the YouTube UI, the extemsopm won't
+ * - if the playback rate is changed in the YouTube UI, the extension won't
  * pick up on the change (since the browser is a separate window!)
  *
  * DONE
@@ -73,7 +73,14 @@ async function onMirrorChange() {
             if (vid) {
                 // TODO wait until the video has finished loading
                 // or consistently keep mirroring it on changes
+                // var vid = document.querySelector('video');
                 vid.style.transform = 'scaleX(-1)';
+                // vid.addEventListener('loadeddata', function() {
+                //     // Video is loaded and can be played
+                //     vid.style.transform = 'scaleX(-1)';
+                //     console.log("ran the event listener");
+                // }, false);
+
                 // console.log('mirrored video!');  // debugging
             }
         }
