@@ -4,17 +4,16 @@
     <head>
         <meta charset="utf-8">
         <link rel="stylesheet" href="options.css"/>
-        <script src="options.js"></script>
     </head>
     
     <body>
-        <h1>dance monkey 🐵<input type="button" id="reset" value="reset"></input></h1>
+        <h1>dance monkey 🐵<input type="button" id="reset-button" value="reset"></input></h1>
         
         <!-- mirroring -->
         <section>
             <!-- TODO change this to a checkbox -->
             <!-- TODO increase spacing -->
-            <h4><span class="option">mirror video:</span> <input type="checkbox" id="mirror" value="off"></input></h4>
+            <h4><span class="option">mirror video:</span> <input type="checkbox" id="mirror-checkbox" value="off"></input></h4>
             <!-- <input type="button" id="mirror-button" value="off"></input> -->
         </section>
 
@@ -23,31 +22,32 @@
             <h4><span class="option">playback speed</span></h4>
             <!-- TODO align these horizontally -->
             <input type="range" id="speed-range" min="0.1" max="2" value="1" step="0.1" list="tickmarks">
-                <!-- note: tickmarks are not supported by Firefox -->
                 <datalist id="tickmarks"><option value="1"></option></datalist>
                 <!-- TODO sync the values with two listeners -->
-                x<input type="number" id="speed-num" min="0.1" max="2" value="1" step="0.1"></input>
+                <!-- x<input type="number" id="speed-num" min="0.1" max="2" value="1" step="0.1"></input> -->
             </input>
         </section>
         
         <!-- loop -->
         <section>
-            <h4><span class="option">loop:</span> <input type="checkbox" id="loop" value="off"></input></h4>
-            <!-- set max to video minute max -->
-            from <input type="number" min="0" max="0" id="minutes-start" placeholder="min"></input> : 
-            <input type="number" min="0" max="0" id="seconds-start" placeholder="sec"></input> to
-            <input type="number" min="0" max="59" id="minutes-end" placeholder="min"></input> : 
-            <input type="number" min="0" max="59" id="seconds-end" placeholder="sec"></input>
+            <h4><span class="option">loop:</span> <input type="checkbox" id="loop-checkbox" value="off"></input></h4>
+            <div id="loop-div" class="hidden">
+                from <input type="number" min="0" max="0" id="loop-minutes-start-num" placeholder="min"></input> : 
+                <input type="number" min="0" max="0" id="loop-seconds-start-num" placeholder="sec"></input> to
+                <input type="number" min="0" max="59" id="loop-minutes-end-num" placeholder="min"></input> : 
+                <input type="number" min="0" max="59" id="loop-seconds-end-num" placeholder="sec"></input>
+            </div>
         </section>
 
         <!-- delay -->
         <section>
             <h4><span class="option">delay</span></h4>
-            <p><input type="number" min="0" max="60" value="0" id="delay"></input> sec</p>
+            <p><input type="number" min="0" max="60" value="0" id="delay-num"></input> sec</p>
         </section>
 
-        <section id="message-box"></section>
-
+        <section id="message-box" class="hidden">test test test</section>
+        
+        <script src="options.js"></script>
     </body>
     
 </html>
