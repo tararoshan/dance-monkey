@@ -1,6 +1,7 @@
 var vid = document.querySelector('video');
 if (vid) {
-    console.log("found video")
+    alert("found video")
+    // console.log("found video")
     // TODO wait until the video has finished loading
     // or consistently keep mirroring it on changes
 

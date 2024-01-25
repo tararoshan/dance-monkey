@@ -221,3 +221,30 @@ invertVideo();
 
 alert("finished mirroring.");
 ```
+
+# Store in browser
+// browserStorage.set({ mirrorCheckbox: 'on' });
+// console.log("looking for video")
+// var vid = document.querySelector('video');
+// if (vid) {
+//     console.log("found video")
+//     // TODO wait until the video has finished loading
+//     // or consistently keep mirroring it on changes
+
+//     // var vid = document.querySelector('video');
+//     vid.style.transform = 'scaleX(-1)';
+//     console.log("video was mirrored")
+//     // vid.addEventListener('loadeddata', function() {
+//     //     // Video is loaded and can be played
+//     //     vid.style.transform = 'scaleX(-1)';
+//     //     console.log("ran the event listener");
+//     // }, false);
+
+//     // console.log('mirrored video!');  // debugging
+// }
+// execute the script in the browser with executeScript
+// executeScript({
+//     target: { tabId: await getActiveTabId(),
+//         allFrames: true },
+//         func: doMirrorVideo,
+//     })

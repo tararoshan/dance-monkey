@@ -1,9 +1,15 @@
-/* options.js 
+/* popup.js 
 TODO:
  - clear storage after changing the page
  - store values when the popup closes
  - create debugging log function controlled by global variable
 */
+
+/** 
+ * CONSTANTS
+ */
+const MAX_SPEED = 10;
+const MIN_SPEED = 0.1;
 
 console.log("RUNNING EXTENSION CODE!!!!!!!!!")
 // Previously had these lines, not sure if the ex
@@ -22,13 +28,12 @@ speedSlider.addEventListener('change', onSpeedChange);
 // speedNum.addEventListener('change', onSpeedChange);
 // loopCheckbox.addEventListener('change', onLoopChange);
 
-const MAX_SPEED = 10;
-const MIN_SPEED = 0.1;
+
 // Const for local storage area
 // const browserStorage = browser.storage.local;
 
 /* display previously-set options on open (startup) */
-initialize();
+// initialize();
 
 /* Retrieves the values for each of the inputs using the
  * local storage (specific to the machine on which the extension
@@ -46,48 +51,47 @@ initialize();
 //     alert(`[storage] (video) speed value: ${speedSlider.value}`);  // debugging
 // }
 
+/**
+ * HELPER FUNCTIONS
+ */
+
+function mirrorVideo() {
+    var vid = document.querySelector('video');
+    if (vid) {
+        vid.style.transform = 'scaleX(-1)';
+    }
+}
+
+function unmirrorVideo() {
+    var vid = document.querySelector('video');
+    if (vid) {
+        vid.style.transform = '';
+    }
+}
+
 /* mirror button function */
 async function onMirrorChange() {
-    console.log("the mirror checkbox was just checked")
+    console.log("the mirror checkbox was just changed")
+    var funcToExecute = null;
 
-    // Mirror the video if the user checked the option
+    // Un/mirror the video depending on checkbox status
     if (mirrorCheckbox.checked) {
         mirrorCheckbox.value = 'on';
-        // var id = 
-        browser.scripting.executeScript({
-            target: {
-                tabId: await getActiveTabId(),
-                allFrames: true
-            },
-            files: ["/content_scripts/mirror.js"]
-        })
-
-        // browserStorage.set({ mirrorCheckbox: 'on' });
-        // console.log("looking for video")
-        // var vid = document.querySelector('video');
-        // if (vid) {
-        //     console.log("found video")
-        //     // TODO wait until the video has finished loading
-        //     // or consistently keep mirroring it on changes
-
-        //     // var vid = document.querySelector('video');
-        //     vid.style.transform = 'scaleX(-1)';
-        //     console.log("video was mirrored")
-        //     // vid.addEventListener('loadeddata', function() {
-        //     //     // Video is loaded and can be played
-        //     //     vid.style.transform = 'scaleX(-1)';
-        //     //     console.log("ran the event listener");
-        //     // }, false);
-
-        //     // console.log('mirrored video!');  // debugging
-        // }
-        // execute the script in the browser with executeScript
-        // executeScript({
-        //     target: { tabId: await getActiveTabId(),
-        //         allFrames: true },
-        //         func: doMirrorVideo,
-        //     })
+        funcToExecute = mirrorVideo;
+        
+        console.log("going to run the mirror script")
+    } else {
+        mirrorCheckbox.value = 'off';
+        funcToExecute = unmirrorVideo;
     }
+
+    browser.scripting.executeScript({
+        func: funcToExecute,
+        target: {
+            tabId: await getActiveTabId(),
+            allFrames: true
+        },
+    })
 }
 
 /* syncing the speed slider and number */

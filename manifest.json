@@ -2,24 +2,28 @@
     "manifest_version": 3,
     "name": "Dance Monkey",
     "version": "0.1",
-
     "description": "helps you to follow dance moves by mirroring the currently-playing video on youtube",
-
     "permissions": [
         "activeTab",
         "storage",
         "tabs",
         "scripting"
     ],
-
     "action": {
         "default_title": "Dance Monkey",
-        "default_popup": "popup/options.html"
-      },
-
-    "content_scripts": [{
-        "matches": ["*://*.youtube.com/*", "*://*.youtube-nocookie.com/*", "*://*.youtube-nocookie.com/*"],
-        "all_frames": true,
-        "js": ["popup/options.js"]
-    }]
+        "default_popup": "popup/popup.html"
+    },
+    "content_scripts": [
+        {
+            "all_frames": true,
+            "matches": [
+                "*://*.youtube.com/*",
+                "*://*.youtube-nocookie.com/*",
+                "*://*.youtube-nocookie.com/*"
+            ],
+            "js": [
+                "popup/popup.js"
+            ]
+        }
+    ]
 }

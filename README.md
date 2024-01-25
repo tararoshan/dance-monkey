@@ -5,11 +5,9 @@ the screen does, code what your boss tells you to code).
 
 ## Manual Testing in Firefox
 Clone the repository, open Firefox > Add-ons Manager > Extensions >
-gear/settings button > Debug Add-ons > Load Temporary Add-on... > select the
-manifest.json file of Dance Monkey.
+gear/settings button > **Debug Add-ons** > Load Temporary Add-on... > select the
+manifest.json file of Dance Monkey. Click "Inspect" on the loaded extention
+block to view console messages, etc.
 
 
 ## Things I Learned
-
-## Notes
-- [firefox source docs (including notes on how to contribute)](https://firefox-source-docs.mozilla.org/browser/urlbar/experiments.html)
