@@ -5,17 +5,21 @@ TODO:
  - create debugging log function controlled by global variable
 */
 
-/** 
+/**
  * CONSTANTS
  */
 const MAX_SPEED = 10;
 const MIN_SPEED = 0.1;
 
-console.log("RUNNING EXTENSION CODE!!!!!!!!!")
-// Previously had these lines, not sure if the ex
-// if (!('browser' in window)) {
-//     window.browser = chrome;
-// }
+// Specifically for debugging, so I don't have to comment stuff out
+const DEGUG = true;
+function debugMessage(message) {
+    if (DEGUG) {
+        console.log(message);
+    }
+}
+
+debugMessage("RUNNING EXTENSION CODE!!!!!!!!!")
 
 // Grab the input elements/items from the extension page
 var mirrorCheckbox = document.getElementById('mirror-checkbox');
@@ -29,57 +33,19 @@ speedSlider.addEventListener('change', onSpeedChange);
 // loopCheckbox.addEventListener('change', onLoopChange);
 
 
-// Const for local storage area
-// const browserStorage = browser.storage.local;
-
-/* display previously-set options on open (startup) */
-// initialize();
-
-/* Retrieves the values for each of the inputs using the
- * local storage (specific to the machine on which the extension
- * was installed).
- * */
-// async function initialize() {
-//     const storedValues = await browserStorage.get();
-
-//     mirrorCheckbox.value = storedValues.mirrorCheckbox;
-//     mirrorCheckbox.checked = mirrorCheckbox.value === 'on' ? true : false;
-//     alert(`[storage] mirror checkbox value: ${mirrorCheckbox.value}`);  // debugging
-
-//     speedSlider.value = storedValues.speed;
-//     speedNum.value = storedValues.speed;
-//     alert(`[storage] (video) speed value: ${speedSlider.value}`);  // debugging
-// }
-
 /**
- * HELPER FUNCTIONS
+ * MIRROR VIDEO LISTENER
  */
-
-function mirrorVideo() {
-    var vid = document.querySelector('video');
-    if (vid) {
-        vid.style.transform = 'scaleX(-1)';
-    }
-}
-
-function unmirrorVideo() {
-    var vid = document.querySelector('video');
-    if (vid) {
-        vid.style.transform = '';
-    }
-}
-
-/* mirror button function */
 async function onMirrorChange() {
-    console.log("the mirror checkbox was just changed")
+    debugMessage("the mirror checkbox was just changed")
     var funcToExecute = null;
 
-    // Un/mirror the video depending on checkbox status
+    // Mirror or unmirror the video depending on checkbox status
     if (mirrorCheckbox.checked) {
         mirrorCheckbox.value = 'on';
         funcToExecute = mirrorVideo;
         
-        console.log("going to run the mirror script")
+        debugMessage("going to run the mirror script")
     } else {
         mirrorCheckbox.value = 'off';
         funcToExecute = unmirrorVideo;
@@ -117,7 +83,7 @@ async function changeSpeed(newSpeed) {
         var vid = document.querySelector('video');
         if (vid) {
             vid.playbackRate = newSpeed;
-            // console.log('Changed video speed!', newSpeed);  // debugging
+            // debugMessage('Changed video speed!', newSpeed);  // debugging
         }
     }
     // execute the script in the browser with executeScript
@@ -137,4 +103,23 @@ async function getActiveTabId() {
         return tab.id;
     }
     return undefined;
+}
+
+
+/**
+ * HELPER FUNCTIONS
+ */
+
+function mirrorVideo() {
+    var vid = document.querySelector('video');
+    if (vid) {
+        vid.style.transform = 'scaleX(-1)';
+    }
+}
+
+function unmirrorVideo() {
+    var vid = document.querySelector('video');
+    if (vid) {
+        vid.style.transform = '';
+    }
 }

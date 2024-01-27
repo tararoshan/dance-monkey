@@ -248,3 +248,33 @@ alert("finished mirroring.");
 //         allFrames: true },
 //         func: doMirrorVideo,
 //     })
+
+
+
+
+# More stuff I cut out
+// if (!('browser' in window)) {
+//     window.browser = chrome;
+// }
+
+// Const for local storage area
+// const browserStorage = browser.storage.local;
+
+/* display previously-set options on open (startup) */
+// initialize();
+
+/* Retrieves the values for each of the inputs using the
+ * local storage (specific to the machine on which the extension
+ * was installed).
+ * */
+// async function initialize() {
+//     const storedValues = await browserStorage.get();
+
+//     mirrorCheckbox.value = storedValues.mirrorCheckbox;
+//     mirrorCheckbox.checked = mirrorCheckbox.value === 'on' ? true : false;
+//     alert(`[storage] mirror checkbox value: ${mirrorCheckbox.value}`);  // debugging
+
+//     speedSlider.value = storedValues.speed;
+//     speedNum.value = storedValues.speed;
+//     alert(`[storage] (video) speed value: ${speedSlider.value}`);  // debugging
+// }
