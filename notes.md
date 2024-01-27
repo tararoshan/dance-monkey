@@ -278,3 +278,45 @@ alert("finished mirroring.");
 //     speedNum.value = storedValues.speed;
 //     alert(`[storage] (video) speed value: ${speedSlider.value}`);  // debugging
 // }
+
+```{js}
+/**
+ * Runs when the speed is changed to sync the value of the speed slider
+ * with the number input option for speed.
+ * @function
+ * @param {any} event - notes
+ */
+function onSpeedChange(event) {
+    let newSpeed = event.target.value;
+
+    if (newSpeed > MAX_SPEED) {
+        newSpeed = MAX_SPEED;
+    } else if (newSpeed < MIN_SPEED) {
+        newSpeed = MIN_SPEED;
+    }
+
+    speedSlider.value = newSpeed;
+    speedNum.value = newSpeed;
+    changeSpeed(newSpeed);
+}
+
+/* executes script assuming no iframes */
+async function changeSpeed(newSpeed) {
+    // browserStorage.set({ speed: newSpeed });
+
+    let speedCode = (newSpeed) => {
+        var vid = document.querySelector('video');
+        if (vid) {
+            vid.playbackRate = newSpeed;
+            debugMessage('Changed video speed!', newSpeed);
+        }
+    }
+    // execute the script in the browser with executeScript
+    executeScript({
+        target: { tabId: await getActiveTabId(),
+        allFrames: true },
+        func: speedCode,
+        args: [newSpeed],
+    })
+}
+```
