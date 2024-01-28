@@ -22,6 +22,10 @@ label {
 }
 
 /* id-specific styles */
+#loop-div{
+    opacity: 0;
+}
+
 #reset {
     font-size: medium;
     margin-left: 1.5rem;

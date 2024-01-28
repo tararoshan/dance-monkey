@@ -63,6 +63,31 @@ async function onMirrorChange() {
 }
 
 /**
+ * LOOP VIDEO LISTENER
+ */
+function onLoopChange() {
+	debugMessage("loop checkbox was just changed");
+
+	if (loopCheckbox.checked) {
+		// if checked, make the minute/seconds numbers no longer hidden
+		document.getElementById("loop-div").style.opacity = 1;
+		const SECONDS_PER_MIN = 60;
+		// Set up the looping
+		let loopStart = document.getElementById("loop-minutes-start-num") * SECONDS_PER_MIN + document.getElementById("loop-seconds-start-num");
+		// set to length of video or the loop stop, whichever is less
+		let loopStop = document.getElementById("loop-minutes-end-num") * SECONDS_PER_MIN + document.getElementById("loop-seconds-end-num");
+		// change currentTime property
+
+		
+	} else{
+		// if not checked, make the minute/seconds numbers hidden
+		document.getElementById("loop-div").style.opacity = 0;
+		// Remove the looping
+
+	}
+}
+
+/**
  * HELPER FUNCTIONS
  */
 async function getActiveTabId() {
@@ -76,14 +101,24 @@ async function getActiveTabId() {
 
 function mirrorVideo() {
 	var vid = document.querySelector("video");
-	if (vid) {
-		vid.style.transform = "scaleX(-1)";
+	if (!vid) {
+		debugMessage("couldn't find video in mirrorVideo function")
 	}
+	vid.style.transform = "scaleX(-1)";
 }
 
 function unmirrorVideo() {
 	var vid = document.querySelector("video");
-	if (vid) {
-		vid.style.transform = "";
+	if (!vid) {
+		debugMessage("couldn't find video in unmirrorVideo function")
 	}
+	vid.style.transform = "";
+}
+
+function loopVideo() {
+	var vid = document.querySelector("video");
+	if (!vid) {
+		debugMessage("couldn't find video in unmirrorVideo function")
+	}
+	if (vid.currentTime > )
 }

@@ -31,12 +31,16 @@
         <!-- loop -->
         <section>
             <h4><span class="option">loop:</span> <input type="checkbox" id="loop-checkbox" value="off"></input></h4>
-            <div id="loop-div" class="hidden">
-                from <input type="number" min="0" max="0" id="loop-minutes-start-num" placeholder="min"></input> : 
-                <input type="number" min="0" max="0" id="loop-seconds-start-num" placeholder="sec"></input> to
+            <div id="loop-div">
+                from <input type="number" min="0" max="59" id="loop-minutes-start-num" placeholder="min"></input> : 
+                <input type="number" min="0" max="59" id="loop-seconds-start-num" placeholder="sec"></input> to
                 <input type="number" min="0" max="59" id="loop-minutes-end-num" placeholder="min"></input> : 
                 <input type="number" min="0" max="59" id="loop-seconds-end-num" placeholder="sec"></input>
             </div>
+            <!-- could later have the times swap -->
+            <p class="loop-warning" style="opacity: 0;">
+                The loop start time is <it>after</it> the end time! Please fix the ordering.
+            </p>
         </section>
 
         <!-- delay -->
