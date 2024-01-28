@@ -12,4 +12,4 @@ block to view console messages, etc.
 
 ## Things I Learned
 - There's a standard for adding in-line documentation for JavaScript, called
-(JSDoc)[https://jsdoc.app/]
+[JSDoc](https://jsdoc.app/)

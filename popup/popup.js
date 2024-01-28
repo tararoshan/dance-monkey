@@ -44,13 +44,10 @@ async function onMirrorChange() {
 
 	// Mirror or unmirror the video depending on checkbox status
 	if (mirrorCheckbox.checked) {
-		mirrorCheckbox.value = "on";
-		funcToExecute = mirrorVideo;
-
+		funcToExecute = mirrorVideoBrowserScript;
 		debugMessage("going to run the mirror script");
 	} else {
-		mirrorCheckbox.value = "off";
-		funcToExecute = unmirrorVideo;
+		funcToExecute = unmirrorVideoBrowserScript;
 	}
 
 	browser.scripting.executeScript({
@@ -65,25 +62,46 @@ async function onMirrorChange() {
 /**
  * LOOP VIDEO LISTENER
  */
-function onLoopChange() {
+async function onLoopChange() {
 	debugMessage("loop checkbox was just changed");
 
 	if (loopCheckbox.checked) {
-		// if checked, make the minute/seconds numbers no longer hidden
-		document.getElementById("loop-div").style.opacity = 1;
 		const SECONDS_PER_MIN = 60;
-		// Set up the looping
-		let loopStart = document.getElementById("loop-minutes-start-num") * SECONDS_PER_MIN + document.getElementById("loop-seconds-start-num");
-		// set to length of video or the loop stop, whichever is less
-		let loopStop = document.getElementById("loop-minutes-end-num") * SECONDS_PER_MIN + document.getElementById("loop-seconds-end-num");
-		// change currentTime property
+		debugMessage('number inputs:', document.getElementById("loop-minutes-start-num"), document.getElementById("loop-seconds-start-num"),
+		document.getElementById("loop-minutes-end-num"), document.getElementById("loop-seconds-end-num"))
 
+		// TODO figure out the default input (or set it to something?)
+		debugMessage(`is input null? ${document.getElementById("loop-minutes-start-num") == null}`)
+		// Set up the looping (browser script)
+		browser.scripting.executeScript({
+			func: loopVideoBrowserScript,
+			target: {
+				tabId: await getActiveTabId(),
+				allFrames: true
+			}
+		})
 		
+		let loopStart = document.getElementById("loop-minutes-start-num") 
+						* SECONDS_PER_MIN
+						+ document.getElementById("loop-seconds-start-num");
+		// set to length of video or the loop stop, whichever is less
+		let loopStop = document.getElementById("loop-minutes-end-num") 
+						* SECONDS_PER_MIN 
+						+ document.getElementById("loop-seconds-end-num");
+		// change currentTime property
+		function loopVideoListener() {
+			debugMessage("the this object: ", this)
+			if (this.currentTime >= loopStop || this.currentTime < loopStart) {
+				vid.currentTime = loopStart;
+			}
+			debugMessage("updated time")
+		}
+		// can do messaging if this doesn't work
 	} else{
 		// if not checked, make the minute/seconds numbers hidden
 		document.getElementById("loop-div").style.opacity = 0;
 		// Remove the looping
-
+		vid.removeEventListener("timeupdate", loopVideoListener)
 	}
 }
 
@@ -99,7 +117,7 @@ async function getActiveTabId() {
 	return undefined;
 }
 
-function mirrorVideo() {
+function mirrorVideoBrowserScript() {
 	var vid = document.querySelector("video");
 	if (!vid) {
 		debugMessage("couldn't find video in mirrorVideo function")
@@ -107,7 +125,7 @@ function mirrorVideo() {
 	vid.style.transform = "scaleX(-1)";
 }
 
-function unmirrorVideo() {
+function unmirrorVideoBrowserScript() {
 	var vid = document.querySelector("video");
 	if (!vid) {
 		debugMessage("couldn't find video in unmirrorVideo function")
@@ -115,10 +133,11 @@ function unmirrorVideo() {
 	vid.style.transform = "";
 }
 
-function loopVideo() {
+function loopVideoBrowserScript() {
 	var vid = document.querySelector("video");
 	if (!vid) {
-		debugMessage("couldn't find video in unmirrorVideo function")
+		debugMessage("couldn't find video in loopVideoListener function");
+	} else {
+		vid.addEventListener("timeupdate", loopVideoListener)
 	}
-	if (vid.currentTime > )
 }
