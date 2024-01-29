@@ -66,9 +66,13 @@ async function onLoopChange() {
 	debugMessage("loop checkbox was just changed");
 
 	if (loopCheckbox.checked) {
+		document.getElementById("loop-div").style.opacity = 1;
 		const SECONDS_PER_MIN = 60;
-		debugMessage('number inputs:', document.getElementById("loop-minutes-start-num"), document.getElementById("loop-seconds-start-num"),
-		document.getElementById("loop-minutes-end-num"), document.getElementById("loop-seconds-end-num"))
+		debugMessage('number inputs:', 
+			document.getElementById("loop-minutes-start-num"), 
+			document.getElementById("loop-seconds-start-num"),
+			document.getElementById("loop-minutes-end-num"), 
+			document.getElementById("loop-seconds-end-num"))
 
 		// TODO figure out the default input (or set it to something?)
 		debugMessage(`is input null? ${document.getElementById("loop-minutes-start-num") == null}`)
