@@ -70,34 +70,74 @@ async function onLoopChange() {
 		document.getElementById("loop-div").style.opacity = 1;
 
 		// Wait until all of the boxes have some input
-		function waitingWhileLoop() {
-			if (minStartElem.value == null || secStartElem.value == null 
-					|| minEndElem.value == null || secEndElem.value == null) {
-				
-				console.log("some element is null...")
-				setTimeout(waitingWhileLoop, 5_000);
-			}
-		}
-
+		// if (
+		// 	minStartElem.value == null ||
+		// 	secStartElem.value == null ||
+		// 	minEndElem.value == null ||
+		// 	secEndElem.value == null
+		// ) {
+			// 	debugMessage("some element is null...");
+			// 	setTimeout(waitingWhileLoop, 5_000);
+			// } else {
 		// Check that the input is valid
-		let loopStart = minStartElem * SECONDS_PER_MIN + secStartElem;
-		let loopStop = minEndElem * SECONDS_PER_MIN + secEndElem;
+		// var loopStart = minStartElem * SECONDS_PER_MIN + secStartElem;
+		// var loopStop = minEndElem * SECONDS_PER_MIN + secEndElem;
+		// var playbackSpeed = 5;
 
-		// Set up the video section looping (browser script)
+		var newSpeed = 0.5;
+		// let speedCode = `var vid = document.querySelector('video');\n vid.playbackRate = ${newSpeed};`;
+		// browser.tabs.executeScript({
+		// 	code: speedCode,
+		// });
+
 		browser.scripting.executeScript({
-			func: loopVideoBrowserScript(loopStart, loopStop),
+			args: [ newSpeed ],
+			func: (newSpeed) => {
+				var vid = document.querySelector('video');
+				vid.playbackRate = newSpeed;
+				console.log("test")
+			},
 			target: {
 				tabId: await getActiveTabId(),
-				allFrames: true
-			}
-		})
+				allFrames: true,
+			},
+		});
 		
+		// Set up the video section looping (browser script)
+		// browser.scripting.executeScript({
+		// 	func: () => {
+		// 		console.log("test1")
+		// 		var vid = document.querySelector("video");
+		// 		vid.playbackRate = playbackSpeed;
+		// 		console.log("test2")
+		// 		if (!vid) {
+		// 			debugMessage(
+		// 				"couldn't find video in loopVideoListener function"
+		// 			);
+		// 		} else {
+		// 			console.log("found video, adding timeupdate listener")
+		// 			let vidDuration = vid.duration;
+		// 			loopStop = loopStop < vidDuration ? loopStop : vidDuration;
+		// 			console.log(`start time: ${loopStart}, stop time: ${loopStop}`)
+
+		// 			vid.addEventListener(
+		// 				"timeupdate",
+		// 				loopVideoListener(vid.duration)
+		// 			);
+		// 		}
+		// 	},
+		// 	target: {
+		// 		tabId: await getActiveTabId(),
+		// 		allFrames: true,
+		// 	},
+		// });
+
 		// can do messaging if this doesn't work
-	} else{
+	} else {
 		// if not checked, make the minute/seconds numbers hidden
 		document.getElementById("loop-div").style.opacity = 0;
 		// Remove the looping
-		vid.removeEventListener("timeupdate", loopVideoListener)
+		// vid.removeEventListener("timeupdate", loopVideoListener);
 	}
 }
 
@@ -116,7 +156,7 @@ async function getActiveTabId() {
 function mirrorVideoBrowserScript() {
 	var vid = document.querySelector("video");
 	if (!vid) {
-		debugMessage("couldn't find video in mirrorVideo function")
+		debugMessage("couldn't find video in mirrorVideo function");
 	}
 	vid.style.transform = "scaleX(-1)";
 }
@@ -124,29 +164,34 @@ function mirrorVideoBrowserScript() {
 function unmirrorVideoBrowserScript() {
 	var vid = document.querySelector("video");
 	if (!vid) {
-		debugMessage("couldn't find video in unmirrorVideo function")
+		debugMessage("couldn't find video in unmirrorVideo function");
 	}
 	vid.style.transform = "";
 }
 
-function loopVideoListener(loopStart, loopStop, vidDuration) {
-	debugMessage("the this object: ", this)
-	loopStop = loopStop < vidDuration ? loopStop : vidDuration;
-
-	if (this.currentTime >= loopStop || this.currentTime < loopStart) {
-		this.currentTime = loopStart;
-		debugMessage(`updated time to ${this.currentTime}`)
-	} else {
-		debugMessage("no time update!")
-	}
-}
-
-function loopVideoBrowserScript(loopStart, loopStop) {
+function loopVideoBrowserScript() {
 	var vid = document.querySelector("video");
 	if (!vid) {
 		debugMessage("couldn't find video in loopVideoListener function");
 	} else {
-		vid.addEventListener("timeupdate", 
-			loopVideoListener(loopStart, loopStop, vid.duration))
+		vid.addEventListener(
+			"timeupdate",
+			loopVideoListener(vid.duration)
+		);
 	}
 }
+
+// function loopVideoListener(vidDuration) {
+// 	debugMessage("the this object: ", this);
+// 	loopStop = loopStop < vidDuration ? loopStop : vidDuration;
+// 	debugMessage(`loop start ${loopStart}, loop stop: ${loopStop}, duration: ${vidDuration}`)
+
+// 	debugMessage(`max speed: ${MAX_SPEED}`)
+
+// 	if (this.currentTime >= loopStop || this.currentTime < loopStart) {
+// 		this.currentTime = loopStart;
+// 		debugMessage(`updated time to ${this.currentTime}`);
+// 	} else {
+// 		debugMessage("no time update!");
+// 	}
+// }

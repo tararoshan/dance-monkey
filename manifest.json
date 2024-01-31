@@ -1,15 +1,15 @@
 {
-    "manifest_version": 3,
+    "manifest_version": 2,
     "name": "Dance Monkey",
     "version": "0.1",
     "description": "helps you to follow dance moves by mirroring the currently-playing video on youtube",
     "permissions": [
         "activeTab",
+        "scripting",
         "storage",
-        "tabs",
-        "scripting"
+        "tabs"
     ],
-    "action": {
+    "browser_action": {
         "default_title": "Dance Monkey",
         "default_popup": "popup/popup.html"
     },
