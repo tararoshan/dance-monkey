@@ -1,7 +1,10 @@
 # Dance Monkey
 a chrome/firefox extension to help with learning dances from YouTube videos. The
-name comes from "code monkey" but for dancing (just follow what the dancer on
-the screen does, code what your boss tells you to code).
+name comes from "code monkey" but for dancing (dance monkeys just follow what the
+dancer on the screen does, code monkeys just code what their boss tells them to
+code).
+
+The Figma design file: [link](https://www.figma.com/file/tIFpsQBEdYRqMR03bvkYrz/dance-monkey?type=design&node-id=0%3A1&mode=design&t=WpDWxXPhiKGkoPqq-1)
 
 ## Manual Testing in Firefox
 Clone the repository, open Firefox > Add-ons Manager > Extensions >

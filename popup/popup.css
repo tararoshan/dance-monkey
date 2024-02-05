@@ -17,15 +17,15 @@ label {
 }
 
 /* class-specific styles */
+.hidden {
+    display: none;
+}
+
 .option {
     background-color: lightpink;
 }
 
 /* id-specific styles */
-/* #loop-div{
-    opacity: 0;
-} */
-
 #reset {
     font-size: medium;
     margin-left: 1.5rem;

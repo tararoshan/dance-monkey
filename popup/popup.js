@@ -67,7 +67,7 @@ async function onLoopChange() {
 	debugMessage("loop checkbox was just changed");
 
 	if (loopCheckbox.checked) {
-		document.getElementById("loop-div").style.opacity = 1;
+		// document.getElementById("loop-div").style.display = ;
 
 		// Wait until all of the boxes have some input
 		// if (
