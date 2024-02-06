@@ -17,3 +17,6 @@ block to view console messages, etc.
 - There's a standard for adding in-line documentation for JavaScript, called
 [JSDoc](https://jsdoc.app/)
 - [Scripting Web API](https://developer.chrome.com/docs/extensions/reference/api/scripting#runtime-functions)
+- Use `<link>` instead of `@import` for loading fonts. `@import` waits until the
+style file has been fetched before rendering, so it takes more time to show.
+- CSS is *so much easier* to understand by inspecting the browser
