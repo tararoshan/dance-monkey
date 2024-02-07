@@ -19,4 +19,4 @@ block to view console messages, etc.
 - [Scripting Web API](https://developer.chrome.com/docs/extensions/reference/api/scripting#runtime-functions)
 - Use `<link>` instead of `@import` for loading fonts. `@import` waits until the
 style file has been fetched before rendering, so it takes more time to show.
-- CSS is *so much easier* to understand by inspecting the browser
+- CSS is *so much easier* to understand by **inspecting the browser**

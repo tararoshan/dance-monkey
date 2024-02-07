@@ -16,26 +16,26 @@
             <h1 class="title-text">dance monkey</h1>
         </div>
 
-        <!-- mirroring -->
-        <section>
-            <!-- TODO change this to a checkbox -->
-            <!-- TODO increase spacing -->
-            <h4><span class="option">mirror video:</span> <input type="checkbox" id="mirror-checkbox" value="off"></input></h4>
-            <!-- <input type="button" id="mirror-button" value="off"></input> -->
+        <!-- MIRRORING -->
+        <section class="title-div" style="margin-top: 0.5em;">
+            <img class="title-icon" src="../assets/mirror.svg">
+            <div>
+                <h3 id="mirror-text">mirror on/off</h3>
+                <input type="checkbox" id="mirror-checkbox" value="off"/>
+            </div>
         </section>
 
-        <!-- speed -->
+        <!-- PLAYBACK SPEED -->
         <section>
-            <h4><span class="option">playback speed</span></h4>
-            <!-- TODO align these horizontally -->
+            <h3>playback speed</h3>
             <input type="range" id="speed-range" min="0.1" max="2" value="1" step="0.1" list="tickmarks">
                 <datalist id="tickmarks"><option value="1"></option></datalist>
                 <!-- TODO sync the values with two listeners -->
-                <!-- x<input type="number" id="speed-num" min="0.1" max="2" value="1" step="0.1"></input> -->
+                x<input type="number" id="speed-num" min="0.1" max="2" value="1" step="0.1"></input>
             </input>
         </section>
         
-        <!-- loop -->
+        <!-- LOOP -->
         <section>
             <h4><span class="option">loop section:</span> <input type="checkbox" id="loop-checkbox" value="off"></input></h4>
             <div id="loop-div" class="hidden">
@@ -50,14 +50,15 @@
             </p>
         </section>
 
-        <!-- delay -->
+        <!-- DELAY -->
         <section>
             <h4><span class="option">delay</span></h4>
             <p><input type="number" min="0" max="60" value="0" id="delay-num"></input> sec</p>
         </section>
 
         <section id="message-box" class="hidden">test test test</section>
-        
+    
+        <!-- BACKGROUND SCRIPT -->
         <script src="popup.js"></script>
     </body>
     

@@ -1,9 +1,10 @@
 /* universal styles */
 * {
     font-family: "Josefin Sans", "Avenir Next", Helvetica, Arial, sans-serif;
+    font-weight: bold;
 }
 
-h3 {
+h4 {
     font-weight: normal;
 }
 
@@ -37,12 +38,17 @@ label {
     margin-inline-start: -7px;
 }
 
-.title-text {
-    /* margin-inline-start: -7px; */
-    font-weight: bold;
+/* id-specific styles */
+#mirror-text {
+    margin-top: 0px;
 }
 
-/* id-specific styles */
+#mirror-checkbox {
+    width: 100%;
+    height: 40%;
+    margin-top: -100%;
+}
+
 #reset {
     font-size: medium;
     margin-left: 1.5rem;

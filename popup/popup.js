@@ -142,7 +142,7 @@ async function onLoopChange() {
 }
 
 /**
- * HELPER FUNCTIONS
+ * HELPER FUNCTIONS, CONTENT SCRIPTS
  */
 async function getActiveTabId() {
 	const tabs = await browser.tabs.query({ active: true });
