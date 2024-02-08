@@ -12,13 +12,13 @@
     
     <body>
         <div class="title-div">
-            <img class="title-icon" src="../assets/icon.svg">
+            <img class="title-icon icon" src="../assets/icon.svg">
             <h1 class="title-text">dance monkey</h1>
         </div>
 
         <!-- MIRRORING -->
         <section class="title-div" style="margin-top: 0.5em;">
-            <img class="title-icon" src="../assets/mirror.svg">
+            <img class="title-icon icon" src="../assets/mirror.svg">
             <div>
                 <h3 id="mirror-text">mirror on/off</h3>
                 <input type="checkbox" id="mirror-checkbox" value="off"/>
@@ -26,28 +26,43 @@
         </section>
 
         <!-- PLAYBACK SPEED -->
+        <!-- TODO sync the values with two listeners -->
         <section>
             <h3>playback speed</h3>
-            <input type="range" id="speed-range" min="0.1" max="2" value="1" step="0.1" list="tickmarks">
-                <datalist id="tickmarks"><option value="1"></option></datalist>
-                <!-- TODO sync the values with two listeners -->
-                x<input type="number" id="speed-num" min="0.1" max="2" value="1" step="0.1"></input>
-            </input>
+            <div class="title-div">
+                <!-- slider -->
+                <img class="icon" src="../assets/turtle.svg">
+                <input type="range" id="speed-range" min="0.1" max="2" value="1" step="0.1" list="tickmarks">
+                    <datalist id="tickmarks"><option value="1"></option></datalist>
+                </input>
+                <img class="icon" src="../assets/hare.svg">
+                <!-- written -->
+                <div class="speed-written">
+                    x<input type="number" id="speed-num" min="0.1" max="2" value="1" step="0.1"></input>
+                </div>
+            </div>
         </section>
         
         <!-- LOOP -->
         <section>
-            <h4><span class="option">loop section:</span> <input type="checkbox" id="loop-checkbox" value="off"></input></h4>
+            <h3 id="loop-title">loop section</h3>
+            <h4>enter the section stop & start time (in min:sec format), then click the loop button</h4>
+            <div class="title-div">
+                <h4>
+                    from <input type="number" min="0" id="loop-start-num" placeholder="start"></input>
+                    to <input type="number" min="0" id="loop-end-num" placeholder="end"></input>
+                </h4>
+                <img class="icon" id="loop-icon" src="../assets/loop.svg">
+            </div>
+
+            <!-- <h4><span class="option">loop section:</span> <input type="checkbox" id="loop-checkbox" value="off"></input></h4>
             <div id="loop-div" class="hidden">
-                from <input type="number" min="0" max="59" id="loop-minutes-start-num" placeholder="min" value="{null}"></input> : 
                 <input type="number" min="0" max="59" id="loop-seconds-start-num" placeholder="sec"></input> to
                 <input type="number" min="0" max="59" id="loop-minutes-end-num" placeholder="min"></input> : 
-                <input type="number" min="0" max="59" id="loop-seconds-end-num" placeholder="sec"></input>
             </div>
-            <!-- could later have the times swap -->
             <p class="loop-warning hidden">
                 The loop start time is <it>after</it> the end time! Please fix the ordering.
-            </p>
+            </p> -->
         </section>
 
         <!-- DELAY -->

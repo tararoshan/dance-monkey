@@ -6,6 +6,7 @@
 
 h4 {
     font-weight: normal;
+    margin-top: 0px;
 }
 
 body {
@@ -14,11 +15,8 @@ body {
 
 input[type='number'] {
     width: 60px;
-}
-
-label {
-    display: block;
-    margin-right: 2rem;
+    font-weight: lighter;
+    font-size: math;
 }
 
 /* class-specific styles */
@@ -32,11 +30,20 @@ label {
 }
 
 .title-icon {
+    margin-inline-start: -7px;
+}
+
+.icon {
     align-self: center;
     max-height: 4em;
     height: max-content;
-    margin-inline-start: -7px;
 }
+
+.speed-written {
+    align-self: center;
+    margin-left: 1em;
+}
+
 
 /* id-specific styles */
 #mirror-text {
@@ -49,11 +56,14 @@ label {
     margin-top: -100%;
 }
 
-#reset {
-    font-size: medium;
-    margin-left: 1.5rem;
-}
-
 #speed-num {
     margin-left: 0.25rem;
+}
+
+#loop-title {
+    margin-bottom: 0px;
+}
+
+#loop-icon {
+    transform: rotate(0.25turn);
 }
