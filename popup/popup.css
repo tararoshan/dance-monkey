@@ -4,9 +4,13 @@
     font-weight: bold;
 }
 
-h4 {
+h4, h5 {
     font-weight: normal;
     margin-top: 0px;
+}
+
+h5 {
+    margin-bottom: 0px;
 }
 
 body {
@@ -44,6 +48,17 @@ input[type='number'] {
     margin-left: 1em;
 }
 
+.loop-with-clipboard-tail {
+    padding-left: 0.3em;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.captioned-clipboard {
+    display: flex;
+}
 
 /* id-specific styles */
 #mirror-text {

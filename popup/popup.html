@@ -48,10 +48,22 @@
             <h3 id="loop-title">loop section</h3>
             <h4>enter the section stop & start time (in min:sec format), then click the loop button</h4>
             <div class="title-div">
-                <h4>
-                    from <input type="number" min="0" id="loop-start-num" placeholder="start"></input>
-                    to <input type="number" min="0" id="loop-end-num" placeholder="end"></input>
-                </h4>
+                <h4>from</h4>
+                <div class="loop-with-clipboard-tail">
+                    <input type="number" min="0" id="loop-start-num" placeholder="start"></input>
+                    <div class="captioned-clipboard">
+                        <img class="icon" src="../assets/clipboard.svg">
+                        <h5>paste current time</h5>
+                    </div>
+                </div>
+                <h4>to</h4>
+                <div class="loop-with-clipboard-tail">
+                    <input type="number" min="0" id="loop-end-num" placeholder="end"></input>
+                    <div class="captioned-clipboard">
+                        <img class="icon" src="../assets/clipboard.svg">
+                        <h5>paste current time</h5>
+                    </div>
+                </div>
                 <img class="icon" id="loop-icon" src="../assets/loop.svg">
             </div>
 
