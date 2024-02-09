@@ -6,12 +6,13 @@ code).
 
 The Figma design file: [link](https://www.figma.com/file/tIFpsQBEdYRqMR03bvkYrz/dance-monkey?type=design&node-id=0%3A1&mode=design&t=WpDWxXPhiKGkoPqq-1)
 
+All of the beautiful icons are actually emojis from [OpenMoji](https://openmoji.org/)!
+
 ## Manual Testing in Firefox
 Clone the repository, open Firefox > Add-ons Manager > Extensions >
 gear/settings button > **Debug Add-ons** > Load Temporary Add-on... > select the
 manifest.json file of Dance Monkey. Click "Inspect" on the loaded extention
 block to view console messages, etc.
-
 
 ## Things I Learned
 - There's a standard for adding in-line documentation for JavaScript, called
@@ -20,3 +21,7 @@ block to view console messages, etc.
 - Use `<link>` instead of `@import` for loading fonts. `@import` waits until the
 style file has been fetched before rendering, so it takes more time to show.
 - CSS is *so much easier* to understand by **inspecting the browser**
+- a [wonderful reference to CSS flexbox](https://www.joshwcomeau.com/css/interactive-guide-to-flexbox/)
+- loading a script pauses the parsing of HTML, so [adding an async or defer](https://www.growingwiththeweb.com/2014/02/async-vs-defer-attributes.html)
+tag can help with the loading
+ 

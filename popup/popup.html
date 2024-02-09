@@ -8,6 +8,8 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;700" rel="stylesheet">
         <link rel="stylesheet" href="popup.css"/>
+        <!-- BACKGROUND SCRIPT -->
+        <script async="true" src="popup.js"></script>
     </head>
     
     <body>
@@ -21,7 +23,7 @@
             <img class="title-icon icon" src="../assets/mirror.svg">
             <div>
                 <h3 id="mirror-text">mirror on/off</h3>
-                <input id="mirror-checkbox" type="checkbox" value="off"/>
+                <input id="mirror-checkbox" type="checkbox" value="off" onclick="mirrorListener()"/>
             </div>
         </section>
 
@@ -32,13 +34,14 @@
             <div class="title-div">
                 <!-- slider -->
                 <img class="icon" src="../assets/turtle.svg">
-                <input id="speed-range" type="range" min="0.1" max="2" value="1" step="0.1" list="tickmarks">
+                <!-- Note: for the speedListener param, 0 represents the slider, 1 represents the number ticker -->
+                <input id="speed-range" type="range" min="0.1" max="2" value="1" step="0.1" list="tickmarks" onchange="speedListener(0)">
                     <datalist id="tickmarks"><option value="1"></option></datalist>
                 </input>
                 <img class="icon" src="../assets/hare.svg">
                 <!-- written -->
                 <div class="speed-written">
-                    x<input id="speed-num" type="number" min="0.1" max="2" value="1" step="0.1"/>
+                    x<input id="speed-num" type="number" min="0.1" max="2" value="1" step="0.1" onchange="speedListener(1)"/>
                 </div>
             </div>
         </section>
@@ -66,7 +69,7 @@
                         <h5>paste current time</h5>
                     </div>
                 </div>
-                <img class="icon" id="loop-icon" src="../assets/loop.svg">
+                <img class="icon" id="loop-icon" src="../assets/loop.svg" onclick="loopListner()">
             </div>
         </section>
         <!-- loop invalid time message -->
@@ -81,14 +84,11 @@
             <h3 class="no-bottom">start delay</h3>
             <h4 class="no-bottom">enter how long to wait until playing the video, then hit the stopwatch</h4>
             <div class="delay-div">
-                <img class="icon delay-elem" src="../assets/stopwatch.svg">
+                <img class="icon delay-elem" src="../assets/stopwatch.svg" onclick="delayListner()">
                 <input id="delay-num" class="delay-elem" type="number" min="0" max="60" value="0"/>
                 <p>sec</p>
             </div>
         </section>
-
-        <!-- BACKGROUND SCRIPT -->
-        <script src="popup.js"></script>
     </body>
     
 </html>
