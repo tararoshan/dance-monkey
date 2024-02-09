@@ -21,36 +21,38 @@
             <img class="title-icon icon" src="../assets/mirror.svg">
             <div>
                 <h3 id="mirror-text">mirror on/off</h3>
-                <input type="checkbox" id="mirror-checkbox" value="off"/>
+                <input id="mirror-checkbox" type="checkbox" value="off"/>
             </div>
         </section>
 
         <!-- PLAYBACK SPEED -->
         <!-- TODO sync the values with two listeners -->
         <section>
-            <h3>playback speed</h3>
+            <h3 class="small-bottom">playback speed</h3>
             <div class="title-div">
                 <!-- slider -->
                 <img class="icon" src="../assets/turtle.svg">
-                <input type="range" id="speed-range" min="0.1" max="2" value="1" step="0.1" list="tickmarks">
+                <input id="speed-range" type="range" min="0.1" max="2" value="1" step="0.1" list="tickmarks">
                     <datalist id="tickmarks"><option value="1"></option></datalist>
                 </input>
                 <img class="icon" src="../assets/hare.svg">
                 <!-- written -->
                 <div class="speed-written">
-                    x<input type="number" id="speed-num" min="0.1" max="2" value="1" step="0.1"></input>
+                    x<input id="speed-num" type="number" min="0.1" max="2" value="1" step="0.1"/>
                 </div>
             </div>
         </section>
         
         <!-- LOOP -->
         <section>
-            <h3 id="loop-title">loop section</h3>
-            <h4>enter the section stop & start time (in min:sec format), then click the loop button</h4>
+            <h3 class="no-bottom">loop section</h3>
+            <h4 class="small-bottom">enter the section stop & start time (in min:sec format), then click the loop button</h4>
+            <!-- TODO TODO change the get element id selector in javascript for these elements -->
+            <!-- TODO TODO parse the inputs to get min:sec to seconds -->
             <div class="title-div">
                 <h4>from</h4>
                 <div class="loop-with-clipboard-tail">
-                    <input type="number" min="0" id="loop-start-num" placeholder="start"></input>
+                    <input id="loop-start-num" type="number" min="0" placeholder="start"/>
                     <div class="captioned-clipboard">
                         <img class="icon" src="../assets/clipboard.svg">
                         <h5>paste current time</h5>
@@ -58,7 +60,7 @@
                 </div>
                 <h4>to</h4>
                 <div class="loop-with-clipboard-tail">
-                    <input type="number" min="0" id="loop-end-num" placeholder="end"></input>
+                    <input id="loop-end-num" type="number" min="0" placeholder="end"/>
                     <div class="captioned-clipboard">
                         <img class="icon" src="../assets/clipboard.svg">
                         <h5>paste current time</h5>
@@ -66,25 +68,25 @@
                 </div>
                 <img class="icon" id="loop-icon" src="../assets/loop.svg">
             </div>
-
-            <!-- <h4><span class="option">loop section:</span> <input type="checkbox" id="loop-checkbox" value="off"></input></h4>
-            <div id="loop-div" class="hidden">
-                <input type="number" min="0" max="59" id="loop-seconds-start-num" placeholder="sec"></input> to
-                <input type="number" min="0" max="59" id="loop-minutes-end-num" placeholder="min"></input> : 
-            </div>
-            <p class="loop-warning hidden">
-                The loop start time is <it>after</it> the end time! Please fix the ordering.
-            </p> -->
+        </section>
+        <!-- loop invalid time message -->
+        <section id="message-box" class="hidden">
+            <h4>
+                Your loop end time is before the start time!
+            </h4>
         </section>
 
         <!-- DELAY -->
         <section>
-            <h4><span class="option">delay</span></h4>
-            <p><input type="number" min="0" max="60" value="0" id="delay-num"></input> sec</p>
+            <h3 class="no-bottom">start delay</h3>
+            <h4 class="no-bottom">enter how long to wait until playing the video, then hit the stopwatch</h4>
+            <div class="delay-div">
+                <img class="icon delay-elem" src="../assets/stopwatch.svg">
+                <input id="delay-num" class="delay-elem" type="number" min="0" max="60" value="0"/>
+                <p>sec</p>
+            </div>
         </section>
 
-        <section id="message-box" class="hidden">test test test</section>
-    
         <!-- BACKGROUND SCRIPT -->
         <script src="popup.js"></script>
     </body>

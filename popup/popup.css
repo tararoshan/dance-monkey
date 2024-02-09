@@ -18,9 +18,9 @@ body {
 }
 
 input[type='number'] {
-    width: 60px;
     font-weight: lighter;
     font-size: math;
+    width: 60px;
 }
 
 /* class-specific styles */
@@ -29,8 +29,8 @@ input[type='number'] {
 }
 
 .title-div {
-    flex-wrap: nowrap;
     display: flex;
+    flex-wrap: nowrap;
 }
 
 .title-icon {
@@ -39,8 +39,8 @@ input[type='number'] {
 
 .icon {
     align-self: center;
-    max-height: 4em;
     height: max-content;
+    max-height: 4em;
 }
 
 .speed-written {
@@ -48,16 +48,38 @@ input[type='number'] {
     margin-left: 1em;
 }
 
+.no-bottom {
+    margin-bottom: 0px;
+}
+
+.small-bottom {
+    margin-bottom: 0.5em;
+}
+
 .loop-with-clipboard-tail {
-    padding-left: 0.3em;
+    align-items: center;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    align-items: center;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
 }
 
 .captioned-clipboard {
+    align-items: center;
     display: flex;
+    justify-content: center;
+    width: min-content;
+}
+
+.delay-div {
+    justify-content: flex-start;
+    display: flex;
+    align-items: center;
+}
+
+.delay-elem {
+    margin-right: 0.3em;
 }
 
 /* id-specific styles */
@@ -66,19 +88,20 @@ input[type='number'] {
 }
 
 #mirror-checkbox {
-    width: 100%;
     height: 40%;
     margin-top: -100%;
+    width: 100%;
 }
 
 #speed-num {
     margin-left: 0.25rem;
 }
 
-#loop-title {
-    margin-bottom: 0px;
+#loop-icon {
+    max-height: 5em;
+    transform: rotate(0.25turn);
 }
 
-#loop-icon {
-    transform: rotate(0.25turn);
+#message-box {
+    color: red;
 }
