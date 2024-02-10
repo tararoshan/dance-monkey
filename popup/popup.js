@@ -1,4 +1,4 @@
-// popup.js
+// popup.js - BACKGROUND SCRIPT
 
 /**
  * CONSTANTS
@@ -7,8 +7,10 @@ const MAX_SPEED = 10;
 const MIN_SPEED = 0.1;
 const SECONDS_PER_MIN = 60;
 
-// Specifically for debugging, so I don't have to comment stuff out
+const SLIDER_INPUT = 0;
+
 const DEGUG = true;
+// Specifically for debugging, so I don't have to comment stuff out
 function debugMessage(message) {
 	if (DEGUG) {
 		console.log(message);
@@ -21,17 +23,17 @@ debugMessage("RUNNING EXTENSION CODE!!!!!!!!!");
  * ADD LISTENERS TO EXTENSION ELEMENTS
  */
 var mirrorCheckbox = document.getElementById("mirror-checkbox");
-mirrorCheckbox.addEventListener("change", onMirrorChange);
+mirrorCheckbox.addEventListener("click", mirrorListener);
 
 var speedSlider = document.getElementById("speed-range");
-// speedSlider.addEventListener('change', onSpeedChange);
-
-// var speedNum = document.getElementById('speed-num');
-// speedNum.addEventListener('change', onSpeedChange);
+speedSlider.addEventListener("change", speedListener(0));
+var speedNum = document.getElementById("speed-written");
+speedNum.addEventListener("change", speedListener(1));
 
 var loopCheckbox = document.getElementById("loop-checkbox");
-loopCheckbox.addEventListener("change", onLoopChange);
+loopCheckbox.addEventListener("change", loopListner);
 let minStartElem = document.getElementById("loop-minutes-start-num");
+
 let secStartElem = document.getElementById("loop-seconds-start-num");
 let minEndElem = document.getElementById("loop-minutes-end-num");
 let secEndElem = document.getElementById("loop-seconds-end-num");
@@ -39,16 +41,16 @@ let secEndElem = document.getElementById("loop-seconds-end-num");
 /**
  * MIRROR VIDEO LISTENER
  */
-async function onMirrorChange() {
+async function mirrorListener() {
 	debugMessage("the mirror checkbox was just changed");
 	var funcToExecute = null;
 
 	// Mirror or unmirror the video depending on checkbox status
 	if (mirrorCheckbox.checked) {
-		funcToExecute = mirrorVideoBrowserScript;
+		funcToExecute = mirrorVideoContentScript;
 		debugMessage("going to run the mirror script");
 	} else {
-		funcToExecute = unmirrorVideoBrowserScript;
+		funcToExecute = unmirrorVideoContentScript;
 	}
 
 	browser.scripting.executeScript({
@@ -61,9 +63,18 @@ async function onMirrorChange() {
 }
 
 /**
+ * PLAYBACK SPEED LISTENER
+ */
+function speedListener(inputNum) {
+	if (inputNum == SLIDER_INPUT) {
+		// todo
+	}
+}
+
+/**
  * LOOP VIDEO LISTENER
  */
-async function onLoopChange() {
+async function loopListner() {
 	debugMessage("loop checkbox was just changed");
 
 	if (loopCheckbox.checked) {
@@ -141,6 +152,10 @@ async function onLoopChange() {
 	}
 }
 
+function delayListener() {
+	// todo
+}
+
 /**
  * HELPER FUNCTIONS, CONTENT SCRIPTS
  */
@@ -153,7 +168,7 @@ async function getActiveTabId() {
 	return undefined;
 }
 
-function mirrorVideoBrowserScript() {
+function mirrorVideoContentScript() {
 	var vid = document.querySelector("video");
 	if (!vid) {
 		debugMessage("couldn't find video in mirrorVideo function");
@@ -161,7 +176,7 @@ function mirrorVideoBrowserScript() {
 	vid.style.transform = "scaleX(-1)";
 }
 
-function unmirrorVideoBrowserScript() {
+function unmirrorVideoContentScript() {
 	var vid = document.querySelector("video");
 	if (!vid) {
 		debugMessage("couldn't find video in unmirrorVideo function");
@@ -169,7 +184,7 @@ function unmirrorVideoBrowserScript() {
 	vid.style.transform = "";
 }
 
-function loopVideoBrowserScript() {
+function loopVideoContentScript() {
 	var vid = document.querySelector("video");
 	if (!vid) {
 		debugMessage("couldn't find video in loopVideoListener function");

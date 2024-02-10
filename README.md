@@ -24,4 +24,4 @@ style file has been fetched before rendering, so it takes more time to show.
 - a [wonderful reference to CSS flexbox](https://www.joshwcomeau.com/css/interactive-guide-to-flexbox/)
 - loading a script pauses the parsing of HTML, so [adding an async or defer](https://www.growingwiththeweb.com/2014/02/async-vs-defer-attributes.html)
 tag can help with the loading
- 
+- it's [not recommended to inline event handlers](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Building_blocks/Events#inline_event_handlers_%E2%80%94_dont_use_these)
