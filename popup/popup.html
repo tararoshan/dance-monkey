@@ -55,21 +55,21 @@
             <div class="title-div">
                 <h4>from</h4>
                 <div class="loop-with-clipboard-tail">
-                    <input id="loop-start-num" type="number" min="0" placeholder="start"/>
+                    <input id="loop-start-minsec" type="text" inputmode="numeric" placeholder="start"/>
                     <div class="captioned-clipboard">
-                        <img class="icon" src="../assets/clipboard.svg">
+                        <img class="icon clickable" id="paste-loop-start" src="../assets/clipboard.svg">
                         <h5>paste current time</h5>
                     </div>
                 </div>
                 <h4>to</h4>
                 <div class="loop-with-clipboard-tail">
-                    <input id="loop-end-num" type="number" min="0" placeholder="end"/>
+                    <input id="loop-stop-minsec" type="text" inputmode="numeric" placeholder="end"/>
                     <div class="captioned-clipboard">
-                        <img class="icon" src="../assets/clipboard.svg">
+                        <img class="icon clickable" id="paste-loop-stop" src="../assets/clipboard.svg">
                         <h5>paste current time</h5>
                     </div>
                 </div>
-                <img class="icon" id="loop-icon" src="../assets/loop.svg">
+                <img class="icon clickable" id="loop-icon" src="../assets/loop.svg">
             </div>
         </section>
         <!-- loop invalid time message -->
@@ -84,7 +84,7 @@
             <h3 class="no-bottom">start delay</h3>
             <h4 class="no-bottom">enter how long to wait until playing the video, then hit the stopwatch</h4>
             <div class="delay-div">
-                <img class="icon delay-elem" src="../assets/stopwatch.svg">
+                <img class="icon delay-elem clickable" src="../assets/stopwatch.svg">
                 <input id="delay-num" class="delay-elem" type="number" min="0" max="60" value="0"/>
                 <p>sec</p>
             </div>

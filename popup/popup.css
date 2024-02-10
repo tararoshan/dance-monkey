@@ -17,17 +17,13 @@ body {
     width: 400px;
 }
 
-input[type='number'] {
+input[type="text"], input[type="number"] {
     font-weight: lighter;
     font-size: math;
     width: 60px;
 }
 
 /* class-specific styles */
-.hidden {
-    display: none;
-}
-
 .title-div {
     display: flex;
     flex-wrap: nowrap;
@@ -41,6 +37,10 @@ input[type='number'] {
     align-self: center;
     height: max-content;
     max-height: 4em;
+}
+
+.clickable {
+    cursor: pointer;
 }
 
 .speed-written {
@@ -70,6 +70,10 @@ input[type='number'] {
     display: flex;
     justify-content: center;
     width: min-content;
+}
+
+.hidden {
+    display: none;
 }
 
 .delay-div {

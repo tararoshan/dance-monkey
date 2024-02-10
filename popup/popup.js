@@ -25,18 +25,20 @@ debugMessage("RUNNING EXTENSION CODE!!!!!!!!!");
 var mirrorCheckbox = document.getElementById("mirror-checkbox");
 mirrorCheckbox.addEventListener("click", mirrorListener);
 
-var speedSlider = document.getElementById("speed-range");
-speedSlider.addEventListener("change", speedListener(0));
-var speedNum = document.getElementById("speed-written");
-speedNum.addEventListener("change", speedListener(1));
+// var speedSlider = document.getElementById("speed-range");
+// speedSlider.addEventListener("change", speedListener(0));
+// var speedNum = document.getElementById("speed-written");
+// speedNum.addEventListener("change", speedListener(1));
 
-var loopCheckbox = document.getElementById("loop-checkbox");
-loopCheckbox.addEventListener("change", loopListner);
-let minStartElem = document.getElementById("loop-minutes-start-num");
+var loopIcon = document.getElementById("loop-icon");
+loopIcon.addEventListener("change", loopListner);
+var loopStartMinsec = document.getElementById("loop-start-minsec");
+var loopStopMinsec = document.getElementById("loop-stop-minsec");
 
-let secStartElem = document.getElementById("loop-seconds-start-num");
-let minEndElem = document.getElementById("loop-minutes-end-num");
-let secEndElem = document.getElementById("loop-seconds-end-num");
+var pasteLoopStart = document.getElementById("paste-loop-start");
+pasteLoopStart.addEventListener("click", pasteLoopTimeListener);
+var pasteLoopStop = document.getElementById("paste-loop-stop");
+pasteLoopStop.addEventListener("click", pasteLoopTimeListener);
 
 /**
  * MIRROR VIDEO LISTENER
@@ -87,9 +89,9 @@ async function loopListner() {
 		// 	minEndElem.value == null ||
 		// 	secEndElem.value == null
 		// ) {
-			// 	debugMessage("some element is null...");
-			// 	setTimeout(waitingWhileLoop, 5_000);
-			// } else {
+		// 	debugMessage("some element is null...");
+		// 	setTimeout(waitingWhileLoop, 5_000);
+		// } else {
 		// Check that the input is valid
 		// var loopStart = minStartElem * SECONDS_PER_MIN + secStartElem;
 		// var loopStop = minEndElem * SECONDS_PER_MIN + secEndElem;
@@ -102,18 +104,17 @@ async function loopListner() {
 		// });
 
 		browser.scripting.executeScript({
-			args: [ newSpeed ],
+			args: [newSpeed],
 			func: (newSpeed) => {
-				var vid = document.querySelector('video');
+				var vid = document.querySelector("video");
 				vid.playbackRate = newSpeed;
-				console.log("test")
 			},
 			target: {
 				tabId: await getActiveTabId(),
 				allFrames: true,
 			},
 		});
-		
+
 		// Set up the video section looping (browser script)
 		// browser.scripting.executeScript({
 		// 	func: () => {
@@ -149,6 +150,42 @@ async function loopListner() {
 		document.getElementById("loop-div").style.opacity = 0;
 		// Remove the looping
 		// vid.removeEventListener("timeupdate", loopVideoListener);
+	}
+}
+
+async function pasteLoopTimeListener(event) {
+	// Get current time of video
+	let injectionResultFrames = await browser.scripting.executeScript({
+		func: () => {
+			var vid = document.querySelector("video");
+			// alert(`current time: ${vid.currentTime}`)
+			return vid.currentTime;
+		},
+		target: {
+			tabId: await getActiveTabId(),
+			allFrames: true,
+		},
+	});
+
+	let currentTime = injectionResultFrames[0].result;
+	if (currentTime == null || currentTime == NaN) {
+		console.log(
+			"[DM] The InjectionResult object didn't have the result in frame 0",
+			injectionResultFrames
+		);
+		return;
+	}
+	// Change into min:sec format, assuming the video is less than an hour
+	let sec = currentTime % 60;
+	let min = (currentTime - sec) / 60;
+	sec -= sec % 1;  // Get rid of the decimal digits
+
+	if (event.target.id == "paste-loop-start") {
+		loopStartMinsec.value = `${min}:${sec < 10 ? '0' + sec : sec}`;
+		debugMessage(`ran on the start, ${min}, ${sec}`);
+	} else {
+		loopStopMinsec.value = `${min}:${sec < 10 ? '0' + sec : sec}`;
+		debugMessage("ran on the stop");
 	}
 }
 
@@ -189,10 +226,7 @@ function loopVideoContentScript() {
 	if (!vid) {
 		debugMessage("couldn't find video in loopVideoListener function");
 	} else {
-		vid.addEventListener(
-			"timeupdate",
-			loopVideoListener(vid.duration)
-		);
+		vid.addEventListener("timeupdate", loopVideoListener(vid.duration));
 	}
 }
 
