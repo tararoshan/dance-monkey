@@ -7,11 +7,22 @@
         "48": "assets/icon.png",
         "128": "assets/icon.png"
     },
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "dancemonkey@tararoshan.com",
+            "strict_min_version": "42.0"
+        }
+    },      
     "permissions": [
         "activeTab",
         "scripting",
         "storage",
         "tabs"
+    ],
+    "host_permissions": [
+        "*://*.youtube.com/*",
+        "*://*.youtube-nocookie.com/*",
+        "*://*.youtube-nocookie.com/*"
     ],
     "action": {
         "default_title": "Dance Monkey",
