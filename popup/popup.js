@@ -177,11 +177,25 @@ async function pasteLoopTimeHandler(event) {
 /**
  * DELAY HANDLER
  */
-function delayHandler() {
-	// delayIcon.addEventListener("click", delayHandler);
-	// var delayNum = document.getElementById("delay-num");
-	if (delayNum == 0) return;
-	
+async function delayHandler() {
+	if (delayNum.value == 0) return;
+
+	browser.scripting.executeScript({
+		args: [delayNum.value],
+		func: (delay) => {
+			var vid = document.querySelector("video");
+			if (!vid) {
+				console.log("[DM] Couldn't find video in delayHandler script");
+			}
+			vid.pause();
+			debugMessage(`pause for ${delay * 1_000} milliseconds`)
+			setTimeout(() => { vid.play(); }, delay * 1_000);
+		},
+		target: {
+			tabId: await getActiveTabId(),
+			allFrames: true,
+		},
+	});
 }
 
 /**
