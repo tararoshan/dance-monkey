@@ -107,6 +107,6 @@ input[type="text"], input[type="number"] {
     transform: rotate(0.25turn);
 }
 
-#message-box {
+#loop-message-box {
     color: red;
 }
