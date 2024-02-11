@@ -1,13 +1,13 @@
 // popup.js - BACKGROUND SCRIPT
 
 /**
- * CONSTANTS
+ * CONSTANTS AND GLOBALS
  */
 const MAX_SPEED = 10;
 const MIN_SPEED = 0.1;
 const SECONDS_PER_MIN = 60;
-
 const SLIDER_INPUT = 0;
+var loopIntervalID = 0;
 
 const DEGUG = true;
 // Specifically for debugging, so I don't have to comment stuff out
@@ -40,17 +40,20 @@ pasteLoopStart.addEventListener("click", pasteLoopTimeHandler);
 var pasteLoopStop = document.getElementById("paste-loop-stop");
 pasteLoopStop.addEventListener("click", pasteLoopTimeHandler);
 
+var delayIcon = document.getElementById("stopwatch-icon");
+delayIcon.addEventListener("click", delayHandler);
+var delayNum = document.getElementById("delay-num");
+
 /**
  * MIRROR VIDEO HANDLER
  */
 async function mirrorHandler() {
-	debugMessage("the mirror checkbox was just changed");
-	
+	debugMessage("Mirror checkbox was just changed");
+
 	var isMirrorRequest = false;
 	// Mirror or unmirror the video depending on checkbox status
 	if (mirrorCheckbox.checked) {
 		isMirrorRequest = true;
-		debugMessage("going to run the mirror script");
 	}
 
 	browser.scripting.executeScript({
@@ -81,7 +84,11 @@ async function speedHandler(event) {
 		args: [newSpeed],
 		func: (newSpeed) => {
 			var vid = document.querySelector("video");
-			vid.playbackRate = newSpeed;
+			if (!vid) {
+				console.log("[DM] Couldn't find video in speedHandler script");
+			} else {
+				vid.playbackRate = newSpeed;
+			}
 		},
 		target: {
 			tabId: await getActiveTabId(),
@@ -108,7 +115,7 @@ async function loopHandler() {
 		loopMessage.style.display = "none";
 	}
 
-	debugMessage(`START: ${loopStartTime}, STOP: ${loopStopTime}`)
+	debugMessage(`START: ${loopStartTime}, STOP: ${loopStopTime}`);
 	// Add event listener for the video time to loop
 	browser.scripting.executeScript({
 		args: [loopStartTime, loopStopTime],
@@ -129,7 +136,6 @@ function parseInputTime(inputTimeString) {
 
 	return timeInSeconds;
 }
-
 
 /**
  * CLIPBOARD PASTE CURRENT TIME HANDLER
@@ -159,12 +165,12 @@ async function pasteLoopTimeHandler(event) {
 	// Change into min:sec format, assuming the video is less than an hour
 	let sec = currentTime % 60;
 	let min = (currentTime - sec) / 60;
-	sec -= sec % 1;  // Get rid of the decimal digits
+	sec -= sec % 1; // Get rid of the decimal digits
 
 	if (event.target.id == "paste-loop-start") {
-		loopStartMinsec.value = `${min}:${sec < 10 ? '0' + sec : sec}`;
+		loopStartMinsec.value = `${min}:${sec < 10 ? "0" + sec : sec}`;
 	} else {
-		loopStopMinsec.value = `${min}:${sec < 10 ? '0' + sec : sec}`;
+		loopStopMinsec.value = `${min}:${sec < 10 ? "0" + sec : sec}`;
 	}
 }
 
@@ -172,7 +178,10 @@ async function pasteLoopTimeHandler(event) {
  * DELAY HANDLER
  */
 function delayHandler() {
-	// todo
+	// delayIcon.addEventListener("click", delayHandler);
+	// var delayNum = document.getElementById("delay-num");
+	if (delayNum == 0) return;
+	
 }
 
 /**
@@ -201,22 +210,31 @@ function mirrorContentScript(isMirrorRequest) {
 function loopVideoContentScript(loopStartTime, loopStopTime) {
 	var vid = document.querySelector("video");
 	if (!vid) {
-		console.log("[DM] Couldn't find video in loopVideoContentScript function");
-	} else {
-		let vidDuration = vid.duration;
-		loopStopTime = loopStopTime < vidDuration ? loopStopTime : vidDuration;
-		vid.addEventListener("timeupdate", videoLoopHandler(loopStartTime, loopStopTime));
+		console.log(
+			"[DM] Couldn't find video in loopVideoContentScript function"
+		);
 	}
+	let vidDuration = vid.duration;
+	loopStopTime = loopStopTime < vidDuration ? loopStopTime : vidDuration;
+	// Clear the previous loop interval checker, if it existed
+	if (loopIntervalID != 0) clearInterval(loopIntervalID);
+	// A small optimization: don't loop the whole video from start to end
+	if (loopStartTime == 0 && loopStopTime == vidDuration) return;
+	// Set up the new interval
+	loopIntervalID = setInterval(
+		videoLoopHandler,
+		1_000,
+		vid,
+		loopStartTime,
+		loopStopTime
+	);
 }
 
-function videoLoopHandler(loopStartTime, loopStopTime) {
-	debugMessage("the this object: ", this);
-	debugMessage(`loop start ${loopStartTime}, loop stop: ${loopStopTime}`);
+function videoLoopHandler(vid, loopStartTime, loopStopTime) {
+	console.log("the this object: ", vid);
+	console.log(`loop start ${loopStartTime}, loop stop: ${loopStopTime}`);
 
-	if (loopStopTime <= this.currentTime || this.currentTime < loopStartTime) {
-		this.currentTime = loopStartTime;
-		debugMessage(`updated time to ${this.currentTime}`);
-	} else {
-		debugMessage("no time update!");
+	if (loopStopTime <= vid.currentTime || vid.currentTime < loopStartTime) {
+		vid.currentTime = loopStartTime;
 	}
 }

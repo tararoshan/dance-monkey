@@ -1,38 +1,43 @@
+/**
+ * LISTEN TO BROWSER ACTIONS
+ */
+// listen to tab URL changes
+browser.tabs.onUpdated.addListener(updateActiveTab);
+// listen to tab switching
+browser.tabs.onActivated.addListener(updateActiveTab);
+// listen for window switching
+browser.windows.onFocusChanged.addListener(updateActiveTab);
 
-/* loop */
-// function loop() {
-//     if (loopBox.value === 'on') {
-//         // if the video is looped, unloop it
-//         loopBox.value = 'off';
-//         localStorage.setItem('loopBox', 'off');
-//         alert('loop now off');
-//     } else if (loopBox.value === 'off') {
-//         // otherwise, loop the video
-//         loopBox.value = 'on';
-//         localStorage.setItem('loopBox', 'on');
-//         alert('loop now on');
-//     }
-// }
-// // if time goes over the ending min/sec, set it to starting time/sec
-// // if below starting time/sec, set it to starting time/sec
-// // set max time/sec values for input to corresponding max for video
-// let durationCode = `var vid = document.querySelector('video');\n vid.duration;`
-
-// browser.tabs.executeScript({
-//     code: durationCode
-// }, setMaxTime)
-
-// function setMaxTime(resultsArray) {
-//     alert(resultsArray[0]);
-// }
-
-// // delay
-// function delay(timeout) {
-//     // remove the hourglass button
-//     // delayButton.style = 
-//     let timeoutCode = `var vid = document.querySelector('video); vid.pause(); setTimeout(() => {vid.play()}, ${timeout} * 1000);`
-// }
-
+/**
+ * IFRAMES
+ */
 // couldn't find a video, try to find iframes
 var myFrame = document.querySelector('iframe');
-myFrame.style.transform = 'scaleX(-1)';
+
+/**
+ * DEBOUNCE FUNCTION
+ */
+function debounce(callback) {
+    if (timer) {
+        clearTimeout(timer)
+        timer = setTimeout(() => {
+            callback()
+            timer = undefined
+        }, time)
+        return
+    }
+
+    callback()
+    timer = setTimeout(() => {
+        timer = undefined
+    }, time)
+    return
+}
+
+/**
+ * BROWSER STORAGE
+ */
+const browserStorage = browser.storage.local;
+browserStorage.set({ mirrorCheckbox: 'on' });
+initialize();
+const storedValues = await browserStorage.get();
