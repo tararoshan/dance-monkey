@@ -24,10 +24,10 @@ debugMessage("RUNNING EXTENSION CODE!!!!!!!!!");
 var mirrorCheckbox = document.getElementById("mirror-checkbox");
 mirrorCheckbox.addEventListener("click", mirrorHandler);
 
-// var speedSlider = document.getElementById("speed-range");
-// speedSlider.addEventListener("change", speedListener(0));
-// var speedNum = document.getElementById("speed-written");
-// speedNum.addEventListener("change", speedListener(1));
+var speedSlider = document.getElementById("speed-range");
+speedSlider.addEventListener("change", speedHandler.bind(SLIDER_INPUT));
+var speedNum = document.getElementById("speed-num");
+speedNum.addEventListener("change", speedHandler.bind(!SLIDER_INPUT));
 
 var loopIcon = document.getElementById("loop-icon");
 loopIcon.addEventListener("click", loopHandler);
@@ -66,15 +66,16 @@ async function mirrorHandler() {
 /**
  * PLAYBACK SPEED HANDLER
  */
-async function speedHandler(inputNum) {
-	if (inputNum == SLIDER_INPUT) {
-		// todo
+async function speedHandler(event) {
+	var newSpeed = 1;
+	// Decide where to get the new speed from and where to update
+	if (this == SLIDER_INPUT) {
+		newSpeed = speedSlider.value;
+		speedNum.value = newSpeed;
+	} else {
+		newSpeed = speedNum.value;
+		speedSlider.value = newSpeed;
 	}
-	var newSpeed = 0.5;
-	// let speedCode = `var vid = document.querySelector('video');\n vid.playbackRate = ${newSpeed};`;
-	// browser.tabs.executeScript({
-	// 	code: speedCode,
-	// });
 
 	browser.scripting.executeScript({
 		args: [newSpeed],
@@ -138,7 +139,6 @@ async function pasteLoopTimeHandler(event) {
 	let injectionResultFrames = await browser.scripting.executeScript({
 		func: () => {
 			var vid = document.querySelector("video");
-			// alert(`current time: ${vid.currentTime}`)
 			return vid.currentTime;
 		},
 		target: {
@@ -163,10 +163,8 @@ async function pasteLoopTimeHandler(event) {
 
 	if (event.target.id == "paste-loop-start") {
 		loopStartMinsec.value = `${min}:${sec < 10 ? '0' + sec : sec}`;
-		debugMessage(`ran on the start, ${min}, ${sec}`);
 	} else {
 		loopStopMinsec.value = `${min}:${sec < 10 ? '0' + sec : sec}`;
-		debugMessage("ran on the stop");
 	}
 }
 
