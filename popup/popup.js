@@ -7,7 +7,7 @@ const MAX_SPEED = 10;
 const MIN_SPEED = 0.1;
 const SECONDS_PER_MIN = 60;
 const SLIDER_INPUT = 0;
-var loopIntervalID = 0;
+var loopIntervalId = 0;
 
 const DEGUG = true;
 // Specifically for debugging, so I don't have to comment stuff out
@@ -26,8 +26,8 @@ mirrorCheckbox.addEventListener("click", mirrorHandler);
 
 var speedSlider = document.getElementById("speed-range");
 speedSlider.addEventListener("change", speedHandler.bind(SLIDER_INPUT));
-var speedNum = document.getElementById("speed-num");
-speedNum.addEventListener("change", speedHandler.bind(!SLIDER_INPUT));
+var speedNumInput = document.getElementById("speed-num");
+speedNumInput.addEventListener("change", speedHandler.bind(!SLIDER_INPUT));
 
 var loopIcon = document.getElementById("loop-icon");
 loopIcon.addEventListener("click", loopHandler);
@@ -42,7 +42,10 @@ pasteLoopStop.addEventListener("click", pasteLoopTimeHandler);
 
 var delayIcon = document.getElementById("stopwatch-icon");
 delayIcon.addEventListener("click", delayHandler);
-var delayNum = document.getElementById("delay-num");
+var delayNumInput = document.getElementById("delay-num");
+
+// Make the styles on the extension reflect those on the video
+loadStylesFromStorage();
 
 /**
  * MIRROR VIDEO HANDLER
@@ -55,6 +58,7 @@ async function mirrorHandler() {
 	if (mirrorCheckbox.checked) {
 		isMirrorRequest = true;
 	}
+	browser.storage.session.set({ "isMirrorRequest": isMirrorRequest });
 
 	browser.scripting.executeScript({
 		args: [isMirrorRequest],
@@ -74,11 +78,12 @@ async function speedHandler(event) {
 	// Decide where to get the new speed from and where to update
 	if (this == SLIDER_INPUT) {
 		newSpeed = speedSlider.value;
-		speedNum.value = newSpeed;
+		speedNumInput.value = newSpeed;
 	} else {
-		newSpeed = speedNum.value;
+		newSpeed = speedNumInput.value;
 		speedSlider.value = newSpeed;
 	}
+	browser.storage.session.set({ "newSpeed": newSpeed });
 
 	browser.scripting.executeScript({
 		args: [newSpeed],
@@ -86,9 +91,8 @@ async function speedHandler(event) {
 			var vid = document.querySelector("video");
 			if (!vid) {
 				console.log("[DM] Couldn't find video in speedHandler script");
-			} else {
-				vid.playbackRate = newSpeed;
 			}
+			vid.playbackRate = newSpeed;
 		},
 		target: {
 			tabId: await getActiveTabId(),
@@ -102,11 +106,13 @@ async function speedHandler(event) {
  */
 async function loopHandler() {
 	debugMessage("loop handler triggered");
+	// Save the raw values in storage 
+	browser.storage.session.set({ "loopStartMinsec": loopStartMinsec.value });
+	browser.storage.session.set({ "loopStopMinsec": loopStopMinsec.value });
 
-	// Get the loop start & stop time
+	// Get the loop start & stop time in terms of seconds
 	let loopStartTime = parseInputTime(loopStartMinsec.value);
 	let loopStopTime = parseInputTime(loopStopMinsec.value);
-
 	// Check that loop stop is after loop start, show the message otherwise
 	if (loopStartTime >= loopStopTime) {
 		loopMessage.style.display = "inherit";
@@ -178,17 +184,17 @@ async function pasteLoopTimeHandler(event) {
  * DELAY HANDLER
  */
 async function delayHandler() {
-	if (delayNum.value == 0) return;
+	browser.storage.session.set({ "delay": delayNumInput.value });
+	if (delayNumInput.value == 0) return;
 
 	browser.scripting.executeScript({
-		args: [delayNum.value],
+		args: [delayNumInput.value],
 		func: (delay) => {
 			var vid = document.querySelector("video");
 			if (!vid) {
 				console.log("[DM] Couldn't find video in delayHandler script");
 			}
 			vid.pause();
-			debugMessage(`pause for ${delay * 1_000} milliseconds`)
 			setTimeout(() => { vid.play(); }, delay * 1_000);
 		},
 		target: {
@@ -201,6 +207,24 @@ async function delayHandler() {
 /**
  * HELPER FUNCTIONS, CONTENT SCRIPTS
  */
+async function loadStylesFromStorage() {
+	debugMessage("LOADING VALUES FROM STORAGE!!!!")
+	let sessionStorage = await browser.storage.session.get();
+	// Mirror
+	let isMirrorRequest = sessionStorage["isMirrorRequest"];
+	mirrorCheckbox.checked = isMirrorRequest;
+	// Playback speed
+	let newSpeed = sessionStorage["newSpeed"];
+	speedNumInput.value = newSpeed;
+	speedSlider.value = newSpeed;
+	// Loop (store values, loopIntervalId)
+	loopStartMinsec.value = sessionStorage["loopStartMinsec"];
+	loopStopMinsec.value = sessionStorage["loopStopMinsec"];
+	loopIntervalId = sessionStorage["loopIntervalId"];
+	// Delay
+	delayNumInput.value = sessionStorage["delay"];
+}
+
 async function getActiveTabId() {
 	const tabs = await browser.tabs.query({ active: true });
 	const tab = tabs[0];
@@ -214,11 +238,13 @@ function mirrorContentScript(isMirrorRequest) {
 	var vid = document.querySelector("video");
 	if (!vid) {
 		console.log("[DM] Couldn't find video in mirrorContentScript function");
-	} else if (isMirrorRequest) {
+	} 
+	if (isMirrorRequest) {
 		vid.style.transform = "scaleX(-1)";
 	} else {
 		vid.style.transform = "";
 	}
+	browser.storage.session.set({ "mirror": vid.style.transform });
 }
 
 function loopVideoContentScript(loopStartTime, loopStopTime) {
@@ -231,17 +257,18 @@ function loopVideoContentScript(loopStartTime, loopStopTime) {
 	let vidDuration = vid.duration;
 	loopStopTime = loopStopTime < vidDuration ? loopStopTime : vidDuration;
 	// Clear the previous loop interval checker, if it existed
-	if (loopIntervalID != 0) clearInterval(loopIntervalID);
+	if (loopIntervalId != 0) clearInterval(loopIntervalId);
 	// A small optimization: don't loop the whole video from start to end
 	if (loopStartTime == 0 && loopStopTime == vidDuration) return;
 	// Set up the new interval
-	loopIntervalID = setInterval(
+	loopIntervalId = setInterval(
 		videoLoopHandler,
 		1_000,
 		vid,
 		loopStartTime,
 		loopStopTime
 	);
+	browser.storage.session.set({ "loopIntervalId": loopIntervalId });
 }
 
 function videoLoopHandler(vid, loopStartTime, loopStopTime) {
