@@ -22,7 +22,7 @@ debugMessage("RUNNING EXTENSION CODE!!!!!!!!!");
  * ADD EVENT LISTENERS TO EXTENSION ELEMENTS
  */
 var mirrorCheckbox = document.getElementById("mirror-checkbox");
-mirrorCheckbox.addEventListener("click", mirrorHandler);
+mirrorCheckbox.addEventListener("change", mirrorHandler);
 
 var speedSlider = document.getElementById("speed-range");
 speedSlider.addEventListener("change", speedHandler.bind(SLIDER_INPUT));
@@ -54,21 +54,16 @@ async function mirrorHandler() {
 	debugMessage("Mirror checkbox was just changed");
 
 	var isMirrorRequest = false;
+	var activeTabId = await getActiveTabId();
 	// Mirror or unmirror the video depending on checkbox status
 	if (mirrorCheckbox.checked) {
 		isMirrorRequest = true;
 	}
+	
+	console.log(`active tab Id ${activeTabId}, mirror request ${isMirrorRequest}`)
 	browser.storage.session.set({ "isMirrorRequest": isMirrorRequest });
-
-	console.log("testing scripting")
-	browser.scripting.executeScript({
-		args: [isMirrorRequest],
-		func: mirrorContentScript,
-		target: {
-			tabId: await getActiveTabId(),
-			allFrames: true,
-		},
-	});
+	browser.tabs.sendMessage(activeTabId, isMirrorRequest);
+	console.log("messagae sent")
 }
 
 /**
@@ -248,34 +243,6 @@ async function getActiveTabId() {
 		return tab.id;
 	}
 	return undefined;
-}
-
-/**
- * 
- * @param {Boolean} isMirrorRequest 
- */
-async function mirrorContentScript(isMirrorRequest) {
-	console.log("test content script mirrors")
-
-	let vid = document.querySelector("video");
-	if (!vid) {
-		console.log("[DM] Couldn't find video in mirrorContentScript function");
-	}
-	
-	if (isMirrorRequest) {
-		console.log("about to send message if")
-		var activeTabId = await getActiveTabId();
-		console.log(`active tab Id ${activeTabId}`)
-		browser.tabs.sendMessage(activeTabId, {content: "true"});
-		console.log("sent message to mirror")
-		// Can remove this once the message passing works
-		vid.style.transform = "scaleX(-1)";
-	} else {
-		console.log("about to send message else")
-		browser.tabs.sendMessage(await getActiveTabId(), "false");
-		console.log("sent message to NOT mirror")
-		vid.style.transform = "";
-	}
 }
 
 /**

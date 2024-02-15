@@ -20,24 +20,33 @@ console.log("running observerContent.js")
 const observerOptions = { attributes: true, attributeFilter: ["style"] };
 const observer = new MutationObserver(observerCallback);
 
-// Start observing the video on the page and keep it mirrored
-function observerCallback() {
-    console.log("Running observerCallback")
-	const vid = document.querySelector("video");
-	vid.style.transform = "scaleX(-1)";
-}
-
 console.log("checkpoint")
 
 // Listen to messages coming from the background script
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    console.log(`got message ${message} with contetnt ${message.content} from the background script`);
-    // if the message is "true", start observing
-    if (message.content == true) {
-        const vid = document.querySelector("video");
+    // if the message is "true", mirror and start observing
+    console.log("recived message", message)
+    const vid = document.querySelector("video");
+    if (message == true) {
+        console.log("setting up observer")
+        vid.style.transform = "scaleX(-1)";
         observer.observe(vid, observerOptions);
+        console.log("observer set up")
     } else {
-        // otherwise (message is "false"), disconnect the observer
+        // otherwise (message is "false"), unmirror and disconnect the observer
+        console.log("disconnecting")
+        vid.style.transform = "";
         observer.disconnect();
+        console.log("disconnect done")
+        vid.style.transform = "";
     }
 });
+
+// Start observing the video on the page and keep it mirrored
+function observerCallback() {
+    console.log("Running observerCallback")
+    console.log(this.target)
+	const vid = document.querySelector("video");
+    // console.log("vid in callback: ", vid)
+	vid.style.transform = "scaleX(-1)";
+}
