@@ -14,6 +14,19 @@ gear/settings button > **Debug Add-ons** > Load Temporary Add-on... > select the
 manifest.json file of Dance Monkey. Click "Inspect" on the loaded extention
 block to view console messages, etc.
 
+### Manifest V3 Notes
+I originally added
+```json
+"host_permissions": [
+    "*://*.youtube.com/*",
+    "*://*.youtube-nocookie.com/*",
+    "<all_urls>"
+],
+```
+because of the `activeTab` permission. But users have to manually enable
+permissions for the extension to run on those sites. I think that's too much
+work for the user, so I'm using the `tabs` permission instead.
+
 ## Things I Learned
 - There's a standard for adding in-line documentation for JavaScript, called
 [JSDoc](https://jsdoc.app/)

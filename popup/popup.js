@@ -60,6 +60,7 @@ async function mirrorHandler() {
 	}
 	browser.storage.session.set({ "isMirrorRequest": isMirrorRequest });
 
+	console.log("testing scripting")
 	browser.scripting.executeScript({
 		args: [isMirrorRequest],
 		func: mirrorContentScript,
@@ -237,6 +238,8 @@ async function getActiveTabId() {
 }
 
 function mirrorContentScript(isMirrorRequest) {
+	console.log("test content script mirrors")
+	
 	let vid = document.querySelector("video");
 	if (!vid) {
 		console.log("[DM] Couldn't find video in mirrorContentScript function");
