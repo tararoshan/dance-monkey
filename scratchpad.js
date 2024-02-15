@@ -1,4 +1,23 @@
 /**
+ * MUTATIONOBSERVER
+ */
+// For running only in the browser:
+function observerCallback() {
+	console.log("Running callback.")
+	const vid = document.querySelector("video");
+	vid.style.transform = "scaleX(-1)";
+}
+
+const vid = document.querySelector("video");
+const observerOptions = { attributes: true, attributeFilter: ["style"] };
+const observer = new MutationObserver(observerCallback);
+observer.observe(vid, observerOptions);
+observer.disconnect();
+
+// But I think it needs messaging so that new MutationObserver objects
+// aren't created every single time the extension is clicked
+
+/**
  * LISTEN TO BROWSER ACTIONS
  */
 // listen to tab URL changes
