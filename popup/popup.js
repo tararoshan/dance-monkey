@@ -88,7 +88,7 @@ async function speedHandler(event) {
 	browser.scripting.executeScript({
 		args: [newSpeed],
 		func: (newSpeed) => {
-			var vid = document.querySelector("video");
+			let vid = document.querySelector("video");
 			if (!vid) {
 				console.log("[DM] Couldn't find video in speedHandler script");
 			}
@@ -150,7 +150,7 @@ async function pasteLoopTimeHandler(event) {
 	// Get current time of video
 	let injectionResultFrames = await browser.scripting.executeScript({
 		func: () => {
-			var vid = document.querySelector("video");
+			let vid = document.querySelector("video");
 			return vid.currentTime;
 		},
 		target: {
@@ -190,7 +190,7 @@ async function delayHandler() {
 	browser.scripting.executeScript({
 		args: [delayNumInput.value],
 		func: (delay) => {
-			var vid = document.querySelector("video");
+			let vid = document.querySelector("video");
 			if (!vid) {
 				console.log("[DM] Couldn't find video in delayHandler script");
 			}
@@ -218,8 +218,10 @@ async function loadStylesFromStorage() {
 	speedNumInput.value = newSpeed;
 	speedSlider.value = newSpeed;
 	// Loop (store values, loopIntervalId)
-	loopStartMinsec.value = sessionStorage["loopStartMinsec"];
-	loopStopMinsec.value = sessionStorage["loopStopMinsec"];
+	if (sessionStorage["loopStartMinsec"] && sessionStorage["loopStopMinsec"]) {
+		loopStartMinsec.value = sessionStorage["loopStartMinsec"];
+		loopStopMinsec.value = sessionStorage["loopStopMinsec"];
+	}
 	loopIntervalId = sessionStorage["loopIntervalId"];
 	// Delay
 	delayNumInput.value = sessionStorage["delay"];
@@ -235,10 +237,10 @@ async function getActiveTabId() {
 }
 
 function mirrorContentScript(isMirrorRequest) {
-	var vid = document.querySelector("video");
+	let vid = document.querySelector("video");
 	if (!vid) {
 		console.log("[DM] Couldn't find video in mirrorContentScript function");
-	} 
+	}
 	if (isMirrorRequest) {
 		vid.style.transform = "scaleX(-1)";
 	} else {
@@ -248,7 +250,7 @@ function mirrorContentScript(isMirrorRequest) {
 }
 
 function loopVideoContentScript(loopStartTime, loopStopTime) {
-	var vid = document.querySelector("video");
+	let vid = document.querySelector("video");
 	if (!vid) {
 		console.log(
 			"[DM] Couldn't find video in loopVideoContentScript function"
