@@ -20,6 +20,15 @@ console.log("running observerContent.js")
 const observerOptions = { attributes: true, attributeFilter: ["style"] };
 const observer = new MutationObserver(observerCallback);
 
+// Start observing the video on the page and keep it mirrored
+function observerCallback() {
+    console.log("Running observerCallback")
+    console.log(this.target)
+	const vid = document.querySelector("video");
+    // console.log("vid in callback: ", vid)
+	vid.style.transform = "scaleX(-1)";
+}
+
 console.log("checkpoint")
 
 // Listen to messages coming from the background script
@@ -41,12 +50,3 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
         vid.style.transform = "";
     }
 });
-
-// Start observing the video on the page and keep it mirrored
-function observerCallback() {
-    console.log("Running observerCallback")
-    console.log(this.target)
-	const vid = document.querySelector("video");
-    // console.log("vid in callback: ", vid)
-	vid.style.transform = "scaleX(-1)";
-}
