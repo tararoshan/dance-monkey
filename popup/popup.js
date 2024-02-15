@@ -208,6 +208,13 @@ async function delayHandler() {
 /**
  * HELPER FUNCTIONS, CONTENT SCRIPTS
  */
+
+/**
+ * Load values for input elements from session storage. Used to keep the UI
+ * of the extension up to date with the scripts that are running on the page.
+ * 
+ * Related to issue #13.
+ */
 async function loadStylesFromStorage() {
 	debugMessage("LOADING VALUES FROM STORAGE!!!!")
 	let sessionStorage = await browser.storage.session.get();
@@ -216,8 +223,10 @@ async function loadStylesFromStorage() {
 	mirrorCheckbox.checked = isMirrorRequest;
 	// Playback speed
 	let newSpeed = sessionStorage["newSpeed"];
-	speedNumInput.value = newSpeed;
-	speedSlider.value = newSpeed;
+	if (newSpeed) {
+		speedNumInput.value = newSpeed;
+		speedSlider.value = newSpeed;
+	}
 	// Loop (store values, loopIntervalId)
 	if (sessionStorage["loopStartMinsec"] && sessionStorage["loopStopMinsec"]) {
 		loopStartMinsec.value = sessionStorage["loopStartMinsec"];
@@ -228,6 +237,10 @@ async function loadStylesFromStorage() {
 	delayNumInput.value = sessionStorage["delay"];
 }
 
+/**
+ * 
+ * @returns tab ID if found, otherwise undefined.
+ */
 async function getActiveTabId() {
 	const tabs = await browser.tabs.query({ active: true });
 	const tab = tabs[0];
@@ -237,21 +250,40 @@ async function getActiveTabId() {
 	return undefined;
 }
 
-function mirrorContentScript(isMirrorRequest) {
+/**
+ * 
+ * @param {Boolean} isMirrorRequest 
+ */
+async function mirrorContentScript(isMirrorRequest) {
 	console.log("test content script mirrors")
-	
+
 	let vid = document.querySelector("video");
 	if (!vid) {
 		console.log("[DM] Couldn't find video in mirrorContentScript function");
 	}
+	
 	if (isMirrorRequest) {
+		console.log("about to send message if")
+		var activeTabId = await getActiveTabId();
+		console.log(`active tab Id ${activeTabId}`)
+		browser.tabs.sendMessage(activeTabId, {content: "true"});
+		console.log("sent message to mirror")
+		// Can remove this once the message passing works
 		vid.style.transform = "scaleX(-1)";
 	} else {
+		console.log("about to send message else")
+		browser.tabs.sendMessage(await getActiveTabId(), "false");
+		console.log("sent message to NOT mirror")
 		vid.style.transform = "";
 	}
-	browser.storage.session.set({ "mirror": vid.style.transform });
 }
 
+/**
+ * 
+ * @param {*} loopStartTime 
+ * @param {*} loopStopTime 
+ * @returns 
+ */
 function loopVideoContentScript(loopStartTime, loopStopTime) {
 	let vid = document.querySelector("video");
 	if (!vid) {
@@ -276,6 +308,12 @@ function loopVideoContentScript(loopStartTime, loopStopTime) {
 	browser.storage.session.set({ "loopIntervalId": loopIntervalId });
 }
 
+/**
+ * Called to check the time of the video and adjust it to be within the loop.
+ * @param {HTMLVideoElement} vid video to be looped.
+ * @param {Number} loopStartTime loop start time (left endpoint).
+ * @param {Number} loopStopTimes loop end time (right endpoint).
+ */
 function videoLoopHandler(vid, loopStartTime, loopStopTime) {
 	console.log("the this object: ", vid);
 	console.log(`loop start ${loopStartTime}, loop stop: ${loopStopTime}`);
