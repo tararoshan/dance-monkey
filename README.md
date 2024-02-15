@@ -15,7 +15,7 @@ manifest.json file of Dance Monkey. Click "Inspect" on the loaded extention
 block to view console messages, etc.
 
 ### Manifest V3 Notes
-I originally added
+Because of the `activeTab` permission, I originally added
 ```json
 "host_permissions": [
     "*://*.youtube.com/*",
@@ -23,9 +23,9 @@ I originally added
     "<all_urls>"
 ],
 ```
-because of the `activeTab` permission. But users have to manually enable
-permissions for the extension to run on those sites. I think that's too much
-work for the user, so I'm using the `tabs` permission instead.
+But users have to manually enable permissions for the extension to run on those
+sites. I think that's too much work for the user, so I'm using the `tabs`
+permission instead.
 
 ## Things I Learned
 - There's a standard for adding in-line documentation for JavaScript, called
@@ -34,7 +34,7 @@ work for the user, so I'm using the `tabs` permission instead.
 - Use `<link>` instead of `@import` for loading fonts. `@import` waits until the
 style file has been fetched before rendering, so it takes more time to show.
 - CSS is *so much easier* to understand by **inspecting the browser**
-- a [wonderful reference to CSS flexbox](https://www.joshwcomeau.com/css/interactive-guide-to-flexbox/)
+- I found a [wonderful reference to CSS flexbox](https://www.joshwcomeau.com/css/interactive-guide-to-flexbox/)
 - loading a script pauses the parsing of HTML, so [adding an async or defer](https://www.growingwiththeweb.com/2014/02/async-vs-defer-attributes.html)
 tag can help with the loading
 - it's [not recommended to inline event handlers](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Building_blocks/Events#inline_event_handlers_%E2%80%94_dont_use_these)
