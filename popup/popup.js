@@ -9,15 +9,6 @@ const SECONDS_PER_MIN = 60;
 const SLIDER_INPUT = 0;
 var loopIntervalId = 0;
 
-const DEGUG = true;
-// Specifically for debugging, so I don't have to comment stuff out
-function debugMessage(message) {
-	if (DEGUG) {
-		console.log(message);
-	}
-}
-debugMessage("RUNNING EXTENSION CODE!!!!!!!!!");
-
 /**
  * ADD EVENT LISTENERS TO EXTENSION ELEMENTS
  */
@@ -51,19 +42,15 @@ loadStylesFromStorage();
  * MIRROR VIDEO HANDLER
  */
 async function mirrorHandler() {
-	debugMessage("Mirror checkbox was just changed");
-
 	var isMirrorRequest = false;
 	var activeTabId = await getActiveTabId();
 	// Mirror or unmirror the video depending on checkbox status
 	if (mirrorCheckbox.checked) {
 		isMirrorRequest = true;
 	}
-	
-	console.log(`active tab Id ${activeTabId}, mirror request ${isMirrorRequest}`)
+
 	browser.storage.session.set({ "isMirrorRequest": isMirrorRequest });
 	browser.tabs.sendMessage(activeTabId, isMirrorRequest);
-	console.log("messagae sent")
 }
 
 /**
@@ -85,9 +72,6 @@ async function speedHandler(event) {
 		args: [newSpeed],
 		func: (newSpeed) => {
 			let vid = document.querySelector("video");
-			if (!vid) {
-				console.log("[DM] Couldn't find video in speedHandler script");
-			}
 			vid.playbackRate = newSpeed;
 		},
 		target: {
@@ -101,7 +85,6 @@ async function speedHandler(event) {
  * LOOP VIDEO HANDLER
  */
 async function loopHandler() {
-	debugMessage("loop handler triggered");
 	// Save the raw values in storage 
 	browser.storage.session.set({ "loopStartMinsec": loopStartMinsec.value });
 	browser.storage.session.set({ "loopStopMinsec": loopStopMinsec.value });
@@ -117,7 +100,6 @@ async function loopHandler() {
 		loopMessage.style.display = "none";
 	}
 
-	debugMessage(`START: ${loopStartTime}, STOP: ${loopStopTime}`);
 	// Add event listener for the video time to loop
 	browser.scripting.executeScript({
 		args: [loopStartTime, loopStopTime],
@@ -187,9 +169,6 @@ async function delayHandler() {
 		args: [delayNumInput.value],
 		func: (delay) => {
 			let vid = document.querySelector("video");
-			if (!vid) {
-				console.log("[DM] Couldn't find video in delayHandler script");
-			}
 			vid.pause();
 			setTimeout(() => { vid.play(); }, delay * 1_000);
 		},
@@ -211,7 +190,6 @@ async function delayHandler() {
  * Related to issue #13.
  */
 async function loadStylesFromStorage() {
-	debugMessage("LOADING VALUES FROM STORAGE!!!!")
 	let sessionStorage = await browser.storage.session.get();
 	// Mirror
 	let isMirrorRequest = sessionStorage["isMirrorRequest"];
@@ -223,11 +201,11 @@ async function loadStylesFromStorage() {
 		speedSlider.value = newSpeed;
 	}
 	// Loop (store values, loopIntervalId)
+	loopIntervalId = sessionStorage["loopIntervalId"];
 	if (sessionStorage["loopStartMinsec"] && sessionStorage["loopStopMinsec"]) {
 		loopStartMinsec.value = sessionStorage["loopStartMinsec"];
 		loopStopMinsec.value = sessionStorage["loopStopMinsec"];
 	}
-	loopIntervalId = sessionStorage["loopIntervalId"];
 	// Delay
 	delayNumInput.value = sessionStorage["delay"];
 }
@@ -253,11 +231,6 @@ async function getActiveTabId() {
  */
 function loopVideoContentScript(loopStartTime, loopStopTime) {
 	let vid = document.querySelector("video");
-	if (!vid) {
-		console.log(
-			"[DM] Couldn't find video in loopVideoContentScript function"
-		);
-	}
 	let vidDuration = vid.duration;
 	loopStopTime = loopStopTime < vidDuration ? loopStopTime : vidDuration;
 	// Clear the previous loop interval checker, if it existed
@@ -266,7 +239,7 @@ function loopVideoContentScript(loopStartTime, loopStopTime) {
 	if (loopStartTime == 0 && loopStopTime == vidDuration) return;
 	// Set up the new interval
 	loopIntervalId = setInterval(
-		videoLoopHandler,
+		loopVideoCSIntervalHandler,
 		1_000,
 		vid,
 		loopStartTime,
@@ -281,10 +254,7 @@ function loopVideoContentScript(loopStartTime, loopStopTime) {
  * @param {Number} loopStartTime loop start time (left endpoint).
  * @param {Number} loopStopTimes loop end time (right endpoint).
  */
-function videoLoopHandler(vid, loopStartTime, loopStopTime) {
-	console.log("the this object: ", vid);
-	console.log(`loop start ${loopStartTime}, loop stop: ${loopStopTime}`);
-
+function loopVideoCSIntervalHandler(vid, loopStartTime, loopStopTime) {
 	if (loopStopTime <= vid.currentTime || vid.currentTime < loopStartTime) {
 		vid.currentTime = loopStartTime;
 	}

@@ -6,7 +6,8 @@
     font-weight: bold;
 }
 
-h4, h5 {
+h4,
+h5 {
     font-weight: normal;
     margin-top: 0px;
 }
@@ -19,7 +20,8 @@ body {
     width: 400px;
 }
 
-input[type="text"], input[type="number"] {
+input[type="text"],
+input[type="number"] {
     font-weight: lighter;
     font-size: math;
     width: 60px;

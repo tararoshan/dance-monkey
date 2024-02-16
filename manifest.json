@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Dance Monkey",
-    "version": "0.0.3",
+    "version": "1.0.0",
     "description": "a chrome/firefox extension to help with learning dances from YouTube  by mirroring and looping the currently-playing video. The name comes from 'code monkey' but for dancing (dance monkeys just follow what the dancer on the screen does, code monkeys just code what their boss tells them to code).",
     "icons": {
         "48": "assets/icon.png",
@@ -12,7 +12,7 @@
             "id": "dancemonkey@tararoshan.com",
             "strict_min_version": "42.0"
         }
-    },      
+    },
     "permissions": [
         "scripting",
         "storage",
@@ -22,15 +22,17 @@
         "default_title": "Dance Monkey",
         "default_popup": "popup/popup.html"
     },
-    "content_scripts": [{
-        "all_frames": true,
-        "matches": [
-            "*://*.youtube.com/*",
-            "*://*.youtube-nocookie.com/*"
-        ],
-        "js": [
-            "popup/popup.js",
-            "observerContent.js"
-        ]
-    }]
+    "content_scripts": [
+        {
+            "all_frames": true,
+            "matches": [
+                "*://*.youtube.com/*",
+                "*://*.youtube-nocookie.com/*"
+            ],
+            "js": [
+                "popup/popup.js",
+                "observerContent.js"
+            ]
+        }
+    ]
 }
