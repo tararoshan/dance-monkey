@@ -9,14 +9,18 @@
     },
     "browser_specific_settings": {
         "gecko": {
-            "id": "dancemonkey@tararoshan.com",
-            "strict_min_version": "42.0"
+            "id": "dancemonkey@tararoshan",
+            "strict_min_version": "109.0"
         }
     },
     "permissions": [
         "scripting",
         "storage",
         "tabs"
+    ],
+    "host_permissions": [
+        "*://*.youtube.com/*",
+        "*://*.youtube-nocookie.com/*"
     ],
     "action": {
         "default_title": "Dance Monkey",
@@ -30,7 +34,6 @@
                 "*://*.youtube-nocookie.com/*"
             ],
             "js": [
-                "popup/popup.js",
                 "observerContent.js"
             ]
         }

@@ -14,18 +14,24 @@
  * would impact response time and memory.
  */
 
+// Define browser (in case the extension is running in Chrome, not Firefox)
+var browser = chrome || browser;
+
+console.log("checkpoint")
 // Only check when the style of the object (which will be a video) changes
 const observerOptions = { attributes: true, attributeFilter: ["style"] };
 const observer = new MutationObserver(observerCallback);
 
 // Start observing the video on the page and keep it mirrored
 function observerCallback() {
+    console.log("running observerCallback")
 	const vid = document.querySelector("video");
 	vid.style.transform = "scaleX(-1)";
 }
 
 // Listen to messages coming from the background script
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    console.log(`got message ${message} from sender ${sender}`)
     // if the message is "true", mirror and start observing
     const vid = document.querySelector("video");
     if (message == true) {
