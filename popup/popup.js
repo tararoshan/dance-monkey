@@ -1,17 +1,17 @@
 // popup.js - BACKGROUND SCRIPT
-// Note: chrome doesn't debug background scripts properly for manifest v3, see
-// https://issues.chromium.org/issues/40805401#comment53
+
+/**
+ * Note: chrome doesn't debug background scripts properly for manifest v3, see
+ * https://issues.chromium.org/issues/40805401#comment53 for progress.
+ */
 
 /**
  * CONSTANTS AND GLOBALS
  */
-const MAX_SPEED = 10;
-const MIN_SPEED = 0.1;
-const SECONDS_PER_MIN = 60;
+// Represent if speed input came from the slider (0) or the number (not 0) 
 const SLIDER_INPUT = 0;
 // Define browser (in case the extension is running in Chrome, not Firefox)
 var browser = chrome || browser;
-var loopIntervalId = 0;
 
 /**
  * ADD EVENT LISTENERS TO EXTENSION ELEMENTS
@@ -53,7 +53,7 @@ async function mirrorHandler() {
 		isMirrorRequest = true;
 	}
 
-	browser.storage.session.set({ "isMirrorRequest": isMirrorRequest });
+	browser.storage.session.set({ isMirrorRequest: isMirrorRequest });
 	browser.tabs.sendMessage(activeTabId, isMirrorRequest);
 }
 
@@ -70,7 +70,7 @@ async function speedHandler(event) {
 		newSpeed = speedNumInput.value;
 		speedSlider.value = newSpeed;
 	}
-	browser.storage.session.set({ "newSpeed": newSpeed });
+	browser.storage.session.set({ newSpeed: newSpeed });
 
 	browser.scripting.executeScript({
 		args: [newSpeed],
@@ -89,9 +89,9 @@ async function speedHandler(event) {
  * LOOP VIDEO HANDLER
  */
 async function loopHandler() {
-	// Save the raw values in storage 
-	browser.storage.session.set({ "loopStartMinsec": loopStartMinsec.value });
-	browser.storage.session.set({ "loopStopMinsec": loopStopMinsec.value });
+	// Save the raw values in storage
+	browser.storage.session.set({ loopStartMinsec: loopStartMinsec.value });
+	browser.storage.session.set({ loopStopMinsec: loopStopMinsec.value });
 
 	// Get the loop start & stop time in terms of seconds
 	let loopStartTime = parseInputTime(loopStartMinsec.value);
@@ -103,8 +103,6 @@ async function loopHandler() {
 	} else {
 		loopMessage.style.display = "none";
 	}
-
-	console.log("about to run loop content script from handler")
 
 	// Add event listener for the video time to loop
 	browser.scripting.executeScript({
@@ -169,7 +167,7 @@ async function pasteLoopTimeHandler(event) {
  * DELAY HANDLER
  */
 async function delayHandler() {
-	browser.storage.session.set({ "delay": delayNumInput.value });
+	browser.storage.session.set({ delay: delayNumInput.value });
 	if (delayNumInput.value == 0) return;
 
 	browser.scripting.executeScript({
@@ -195,7 +193,7 @@ async function delayHandler() {
 /**
  * Load values for input elements from session storage. Used to keep the UI
  * of the extension up to date with the scripts that are running on the page.
- * 
+ *
  * Related to issue #13.
  */
 async function loadStylesFromStorage() {
@@ -209,9 +207,7 @@ async function loadStylesFromStorage() {
 		speedNumInput.value = newSpeed;
 		speedSlider.value = newSpeed;
 	}
-	// Loop (store values, loopIntervalId)
-	loopIntervalId = sessionStorage["loopIntervalId"] || 0;
-	console.log("stored loop interval id: ", loopIntervalId)
+	// Loop (show user-input start/stop values for current loop)
 	if (sessionStorage["loopStartMinsec"] && sessionStorage["loopStopMinsec"]) {
 		loopStartMinsec.value = sessionStorage["loopStartMinsec"];
 		loopStopMinsec.value = sessionStorage["loopStopMinsec"];
@@ -221,7 +217,7 @@ async function loadStylesFromStorage() {
 }
 
 /**
- * 
+ *
  * @returns tab ID if found, otherwise undefined.
  */
 async function getActiveTabId() {
@@ -234,49 +230,27 @@ async function getActiveTabId() {
 }
 
 /**
- * 
- * @param {*} loopStartTime 
- * @param {*} loopStopTime 
- * @returns 
+ *
+ * @param {*} loopStartTime
+ * @param {*} loopStopTime
  */
 async function loopVideoContentScript(loopStartTime, loopStopTime) {
 	let vid = document.querySelector("video");
-	console.log("getting video, vid:", vid)
 	if (vid) {
 		let vidDuration = vid.duration;
-		console.log("got vid dration ", vidDuration)
 		loopStopTime = loopStopTime < vidDuration ? loopStopTime : vidDuration;
-		console.log("test 0 ", loopStartTime, " ", loopStopTime)
-		console.log("interval id", loopIntervalId)
-		var loopIntervalId = loopIntervalId ? loopIntervalId : await browser.storage.session.get("loopIntervalId") || 0;
-		console.log("test 0.5")
 		// Clear the previous loop interval checker, if it existed
 		if (loopIntervalId != 0) clearInterval(loopIntervalId);
 		// A small optimization: don't loop the whole video from start to end
-		console.log("test 1 ")
 		if (loopStartTime == 0 && loopStopTime == vidDuration) return;
 		// Set up the new interval
-		console.log("test 2 ")
-		loopIntervalId = setInterval(
-			loopVideoCSIntervalHandler,
-			1_000,
-			vid,
-			loopStartTime,
-			loopStopTime
-		);
-		console.log("intervaal id: ", loopIntervalId)
-		browser.storage.session.set({ "loopIntervalId": loopIntervalId });
-	}
-}
-
-/**
- * Called to check the time of the video and adjust it to be within the loop.
- * @param {HTMLVideoElement} vid video to be looped.
- * @param {Number} loopStartTime loop start time (left endpoint).
- * @param {Number} loopStopTimes loop end time (right endpoint).
- */
-function loopVideoCSIntervalHandler(vid, loopStartTime, loopStopTime) {
-	if (vid && (loopStopTime <= vid.currentTime || vid.currentTime < loopStartTime)) {
-		vid.currentTime = loopStartTime;
+		loopIntervalId = setInterval(() => {
+			if (vid &&
+				(loopStopTime <= vid.currentTime ||
+					vid.currentTime < loopStartTime)
+			) {
+				vid.currentTime = loopStartTime;
+			}
+		}, 1_000);
 	}
 }
