@@ -21,6 +21,10 @@
         "*://*.youtube.com/*",
         "*://*.youtube-nocookie.com/*"
     ],
+    "host_permissions": [
+        "*://*.youtube.com/*",
+        "*://*.youtube-nocookie.com/*"
+    ],
     "action": {
         "default_title": "Dance Monkey",
         "default_popup": "popup/popup.html"
