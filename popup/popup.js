@@ -1,4 +1,4 @@
-// popup.js - BACKGROUND SCRIPT
+// popup.js - BACKGROUND SCRIPT (mostly, see end)
 
 /**
  * Note: chrome doesn't debug background scripts properly for manifest v3, see
@@ -16,6 +16,9 @@ var browser = chrome || browser;
 /**
  * ADD EVENT LISTENERS TO EXTENSION ELEMENTS
  */
+var dmLogo = document.getElementById("dm-logo");
+dmLogo.addEventListener("click", logoHandler);
+
 var mirrorCheckbox = document.getElementById("mirror-checkbox");
 mirrorCheckbox.addEventListener("change", mirrorHandler);
 
@@ -41,6 +44,38 @@ var delayNumInput = document.getElementById("delay-num");
 
 // Make the styles on the extension reflect those on the video
 loadStylesFromStorage();
+
+/**
+ * LOGO HANDLER - CLEAR ALL PROPERTIES
+ */
+async function logoHandler() {
+	// Clear values from storage and reset affected video elements
+	browser.storage.session.clear();
+	// Clear mirror
+	if (mirrorCheckbox.checked) {
+		// Remove the mutation observer, reset the video
+		mirrorCheckbox.checked = false;
+		mirrorHandler();
+	}
+	// Clear playback speed
+	speedNumInput.value = 1;
+	speedHandler.bind(!SLIDER_INPUT)();
+	// Clear loop -- if out of bounds of video duration, clears the loop 
+	let loopStartTime = 0;
+	let loopStopTime = Number.MAX_SAFE_INTEGER;
+	browser.scripting.executeScript({
+		args: [loopStartTime, loopStopTime],
+		func: loopVideoContentScript,
+		target: {
+			tabId: await getActiveTabId(),
+			allFrames: true,
+		},
+	});
+	loopStartMinsec.value = "";
+	loopStopMinsec.value = "";
+	// Clear delay
+	delayNumInput.value = 0;
+}
 
 /**
  * MIRROR VIDEO HANDLER
@@ -230,7 +265,13 @@ async function getActiveTabId() {
 }
 
 /**
- *
+ * Clears the previous loop and starts looping with the new start and stop time.
+ * If the stop time is past the end of the video, loops to the end of the video.
+ * 
+ * Note that this function is a content script and runs in the same context as
+ * the scripts in observerContent.js. I'll move it there later when I clean up
+ * the code!
+ * 
  * @param {*} loopStartTime
  * @param {*} loopStopTime
  */

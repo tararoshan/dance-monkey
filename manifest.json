@@ -15,8 +15,7 @@
     },
     "permissions": [
         "scripting",
-        "storage",
-        "tabs"
+        "storage"
     ],
     "host_permissions": [
         "*://*.youtube.com/*",
