@@ -8,6 +8,7 @@
 /**
  * CONSTANTS AND GLOBALS
  */
+const SECONDS_PER_MIN = 60;
 // Represent if speed input came from the slider (0) or the number (not 0) 
 const SLIDER_INPUT = 0;
 // Define browser (in case the extension is running in Chrome, not Firefox)
@@ -154,7 +155,7 @@ function parseInputTime(inputTimeString) {
 	let timeArray = inputTimeString.split(":");
 	let timeInSeconds =
 		timeArray.length > 1
-			? Number(timeArray[0]) * 60 + Number(timeArray[1])
+			? Number(timeArray[0]) * SECONDS_PER_MIN + Number(timeArray[1])
 			: Number(timeArray[0]);
 
 	return timeInSeconds;
@@ -187,8 +188,8 @@ async function pasteLoopTimeHandler(event) {
 	}
 
 	// Change into min:sec format, assuming the video is less than an hour
-	let sec = currentTime % 60;
-	let min = (currentTime - sec) / 60;
+	let sec = currentTime % SECONDS_PER_MIN;
+	let min = (currentTime - sec) / SECONDS_PER_MIN;
 	sec -= sec % 1; // Get rid of the decimal digits
 
 	if (event.target.id == "paste-loop-start") {
