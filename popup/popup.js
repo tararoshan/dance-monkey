@@ -9,7 +9,6 @@
  * CONSTANTS AND GLOBALS
  */
 const SECONDS_PER_MIN = 60;
-var loopIntervalId = 0; 
 // Represent if speed input came from the slider (0) or the number (not 0) 
 const SLIDER_INPUT = 0;
 // Define browser (in case the extension is running in Chrome, not Firefox)
@@ -156,7 +155,7 @@ function parseInputTime(inputTimeString) {
 	let timeArray = inputTimeString.split(":");
 	let timeInSeconds =
 		timeArray.length > 1
-			? Number(timeArray[0]) * 60 + Number(timeArray[1])
+			? Number(timeArray[0]) * SECONDS_PER_MIN + Number(timeArray[1])
 			: Number(timeArray[0]);
 
 	return timeInSeconds;
@@ -188,8 +187,8 @@ async function pasteLoopTimeHandler(event) {
 	}
 
 	// Change into min:sec format, assuming the video is less than an hour
-	let sec = currentTime % 60;
-	let min = (currentTime - sec) / 60;
+	let sec = currentTime % SECONDS_PER_MIN;
+	let min = (currentTime - sec) / SECONDS_PER_MIN;
 	sec -= sec % 1; // Get rid of the decimal digits
 
 	if (event.target.id == "paste-loop-start") {
@@ -241,8 +240,7 @@ async function loadStylesFromStorage() {
 		speedNumInput.value = newSpeed;
 		speedSlider.value = newSpeed;
 	}
-	// Loop (store values, loopIntervalId)
-	loopIntervalId = sessionStorage["loopIntervalId"];
+	// Loop (store values)
 	if (sessionStorage["loopStartMinsec"] && sessionStorage["loopStopMinsec"]) {
 		loopStartMinsec.value = sessionStorage["loopStartMinsec"];
 		loopStopMinsec.value = sessionStorage["loopStopMinsec"];
@@ -278,25 +276,13 @@ function loopVideoContentScript(loopStartTime, loopStopTime) {
 	if (loopIntervalId != 0) clearInterval(loopIntervalId);
 	// A small optimization: don't loop the whole video from start to end
 	if (loopStartTime == 0 && loopStopTime == vidDuration) return;
-	// Set up the new interval
-	loopIntervalId = setInterval(
-		loopVideoCSIntervalHandler,
+	loopIntervalId = setInterval((vid, loopStartTime, loopStopTime) => {
+		if (loopStopTime <= vid.currentTime || vid.currentTime < loopStartTime) {
+			vid.currentTime = loopStartTime;
+		}},
 		1_000,
 		vid,
 		loopStartTime,
 		loopStopTime
 	);
-	browser.storage.session.set({ "loopIntervalId": loopIntervalId });
-}
-
-/**
- * Called to check the time of the video and adjust it to be within the loop.
- * @param {HTMLVideoElement} vid video to be looped.
- * @param {Number} loopStartTime loop start time (left endpoint).
- * @param {Number} loopStopTimes loop end time (right endpoint).
- */
-function loopVideoCSIntervalHandler(vid, loopStartTime, loopStopTime) {
-	if (loopStopTime <= vid.currentTime || vid.currentTime < loopStartTime) {
-		vid.currentTime = loopStartTime;
-	}
 }

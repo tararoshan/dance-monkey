@@ -28,7 +28,7 @@ var browser = chrome || browser;
  * Initialized as 0 to indicate that there's no loop running yet. This is shared
  * across _all_ content scripts, including those run within popup.js.
  */
-var loopIntervalId = 0;
+var loopIntervalId = 5;
 
 // Only check when the style of the object (which will be a video) changes
 const observerOptions = { attributes: true, attributeFilter: ["style"] };
