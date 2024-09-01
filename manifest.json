@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "Dance Monkey",
     "version": "1.0.1",
-    "description": "a chrome/firefox extension to help with learning dances from YouTube by mirroring and looping the currently-playing video.",
+    "description": "A Chrome/Firefox extension to help with learning dances from YouTube by mirroring and looping the currently-playing video.",
     "icons": {
         "48": "assets/icon.png",
         "128": "assets/icon.png"
